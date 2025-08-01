@@ -1,7 +1,23 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    appDir: true,
+    serverActions: true
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.nasa.gov'
+      }
+    ]
+  },
+  eslint: {
+    dirs: ['src']
+  },
+  typescript: {
+    ignoreBuildErrors: true
+  }
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = nextConfig

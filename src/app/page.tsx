@@ -1,7 +1,9 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image'
+
+import styles from './page.module.css'
 
 export default function Home() {
+  console.log('1')
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -13,6 +15,7 @@ export default function Home() {
           height={38}
           priority
         />
+
         <ol>
           <li>
             Get started by editing <code>src/app/page.tsx</code>.
@@ -91,5 +94,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  );
+  )
 }
