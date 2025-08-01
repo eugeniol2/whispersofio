@@ -1,8 +1,37 @@
+// src/types/mui.d.ts (or a similar location)
+import '@mui/material/styles'
+
 import { createTheme } from '@mui/material/styles'
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    border: {
+      mainBorder: string
+    }
+  }
+
+  interface PaletteOptions {
+    border?: {
+      mainBorder: string
+    }
+  }
+
+  interface TypeBackground {
+    backgroundGradient: string
+    customBackground: string
+  }
+}
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
+    border: {
+      mainBorder: 'rgba(74, 30, 106, 0.3)'
+    },
+    common: {
+      white: '#fff',
+      black: '#000'
+    },
     primary: {
       main: '#4A1E6A', // Nebula Purple
       light: '#6A3D8A',
@@ -15,7 +44,9 @@ const theme = createTheme({
     },
     background: {
       default: '#0A0A2A', // Cosmic Black
-      paper: '#121240' // Deep Space
+      paper: '#121240', // Deep Space
+      backgroundGradient: 'linear-gradient(to bottom, #0A0A2A, #121240)',
+      customBackground: 'rgba(10, 10, 42, 0.8)'
     },
     text: {
       primary: '#FFFFFF',
@@ -95,6 +126,17 @@ const theme = createTheme({
           background: 'rgba(10, 10, 42, 0.8)',
           backdropFilter: 'blur(10px)',
           borderBottom: '1px solid rgba(74, 30, 106, 0.3)'
+        }
+      }
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            background: 'linear-gradient(135deg, #2A6FAE, #5A2E7A)',
+            transform: 'scale(1.03)',
+            transition: 'transform 0.3s ease'
+          }
         }
       }
     }
