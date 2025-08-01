@@ -1,24 +1,22 @@
 'use client'
 
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import MenuIcon from '@mui/icons-material/Menu'
 import {
   AppBar,
   Box,
   Button,
   Container,
-  Drawer,
   IconButton,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme
 } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 
-import { drawer } from './components/Drawer'
+import { CustomDrawer } from './components/CustomDrawer'
 import Footer from './components/Footer'
-
-const drawerWidth = 240
 
 export default function DashboardLayout({
   children
@@ -27,11 +25,13 @@ export default function DashboardLayout({
 }) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
+    setIsDrawerOpen(!isDrawerOpen)
   }
+
+  const drawerWidth = isDrawerOpen ? 240 : 0
 
   return (
     <>
@@ -49,6 +49,30 @@ export default function DashboardLayout({
             ml: { md: `${drawerWidth}px` }
           }}
         >
+          {!isDrawerOpen && !isMobile && (
+            <Box
+              sx={{
+                position: 'fixed',
+                top: 80,
+                left: 16,
+                zIndex: theme => theme.zIndex.drawer + 1,
+                backgroundColor: 'rgba(10,10,42,0.8)',
+                borderRadius: '50%',
+                boxShadow: 3
+              }}
+            >
+              <IconButton
+                onClick={handleDrawerToggle}
+                color="secondary"
+                size="large"
+                sx={{
+                  boxShadow: '0 4px 15px rgba(0, 194, 194, 0.3)'
+                }}
+              >
+                <KeyboardDoubleArrowRightIcon fontSize="large" />
+              </IconButton>
+            </Box>
+          )}
           <Toolbar>
             {isMobile && (
               <IconButton
@@ -82,38 +106,11 @@ export default function DashboardLayout({
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
           aria-label="mailbox folders"
         >
-          {isMobile ? (
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              ModalProps={{
-                keepMounted: true
-              }}
-              sx={{
-                '& .MuiDrawer-paper': {
-                  width: drawerWidth,
-                  background: 'linear-gradient(to bottom, #0A0A2A, #121240)'
-                }
-              }}
-            >
-              {drawer}
-            </Drawer>
-          ) : (
-            <Drawer
-              variant="permanent"
-              sx={{
-                '& .MuiDrawer-paper': {
-                  width: drawerWidth,
-                  background: 'linear-gradient(to bottom, #0A0A2A, #121240)',
-                  borderRight: `1px solid ${theme.palette.border.mainBorder}`
-                }
-              }}
-              open
-            >
-              {drawer}
-            </Drawer>
-          )}
+          <CustomDrawer
+            drawerToggleFunction={handleDrawerToggle}
+            isOpen={isDrawerOpen}
+            drawerWidth={drawerWidth}
+          />
         </Box>
 
         <Box
