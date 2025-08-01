@@ -31,8 +31,6 @@ export default function DashboardLayout({
     setIsDrawerOpen(!isDrawerOpen)
   }
 
-  const drawerWidth = isDrawerOpen ? 240 : 0
-
   return (
     <>
       <Box
@@ -42,13 +40,7 @@ export default function DashboardLayout({
           background: `radial-gradient(circle at center, ${theme.palette.background.default} 0%, #000013 100%)`
         }}
       >
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            ml: { md: `${drawerWidth}px` }
-          }}
-        >
+        <AppBar position="fixed">
           {!isDrawerOpen && !isMobile && (
             <Box
               sx={{
@@ -101,35 +93,25 @@ export default function DashboardLayout({
           </Toolbar>
         </AppBar>
 
-        <Box
-          component="nav"
-          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-          aria-label="mailbox folders"
-        >
-          <CustomDrawer
-            drawerToggleFunction={handleDrawerToggle}
-            isOpen={isDrawerOpen}
-            drawerWidth={drawerWidth}
-          />
-        </Box>
+        <CustomDrawer
+          drawerToggleFunction={handleDrawerToggle}
+          isOpen={isDrawerOpen}
+          drawerWidth={240}
+        />
 
         <Box
           component="main"
           sx={{
             flexGrow: 1,
             p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: '100px',
             marginTop: '64px'
           }}
         >
           <Container maxWidth="xl">{children}</Container>
         </Box>
       </Box>
-      <Box
-        sx={{
-          ml: { md: `${drawerWidth}px` }
-        }}
-      >
+      <Box>
         <Footer />
       </Box>
     </>
