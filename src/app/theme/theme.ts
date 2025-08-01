@@ -65,6 +65,15 @@ const theme = createTheme({
       main: '#1A5F9E' // Stellar Blue
     }
   },
+  transitions: {
+    easing: {
+      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)' // Suave entrada e saída
+    },
+    duration: {
+      enteringScreen: 500, // Padrão para elementos entrando
+      leavingScreen: 300 // Padrão para elementos saindo
+    }
+  },
   typography: {
     fontFamily: ['Roboto', '"Space Grotesk"', 'sans-serif'].join(','),
     h1: {
