@@ -67,11 +67,11 @@ const theme = createTheme({
   },
   transitions: {
     easing: {
-      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)' // Suave entrada e saída
+      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
     },
     duration: {
-      enteringScreen: 500, // Padrão para elementos entrando
-      leavingScreen: 300 // Padrão para elementos saindo
+      enteringScreen: 500,
+      leavingScreen: 300
     }
   },
   typography: {
@@ -145,6 +145,16 @@ const theme = createTheme({
             background: 'linear-gradient(135deg, #2A6FAE, #5A2E7A)',
             transform: 'scale(1.03)',
             transition: 'transform 0.3s ease'
+          }
+        }
+      }
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: '0px',
+          '&:last-child': {
+            paddingBottom: '0px'
           }
         }
       }

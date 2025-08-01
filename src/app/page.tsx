@@ -1,39 +1,74 @@
 'use client'
 
-import { Box, Container, Stack, Typography } from '@mui/material'
-import Image from 'next/image'
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
+import { Box, Container, Typography, useTheme } from '@mui/material'
+
+import { CustomCard } from './components/common/CustomCard'
 
 export default function Home() {
+  const theme = useTheme()
+
   return (
-    <Container maxWidth="md">
-      <Stack
-        spacing={4}
-        alignItems="center"
-        justifyContent="center"
-        sx={{ minHeight: '100vh' }}
+    <Container maxWidth="xl" sx={{ py: 8 }}>
+      <Box
+        sx={{
+          textAlign: 'center',
+          maxWidth: 800,
+          mx: 'auto',
+          mb: 8,
+          px: 2
+        }}
       >
-        <Image
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-
-        <Typography variant="h6" align="center">
-          Get started by editing <code>src/app/page.tsx</code>
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            mb: 3,
+            background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            lineHeight: 1.2
+          }}
+        >
+          Explore the Universe with NASA APIs
         </Typography>
-
-        <Typography variant="body1" align="center">
-          Save and see your changes instantly.
+        <Typography
+          variant="h5"
+          component="p"
+          color="text.secondary"
+          sx={{
+            fontWeight: 400,
+            lineHeight: 1.6
+          }}
+        >
+          {
+            "Access real-time space data, stunning imagery, and scientific discoveries from NASA's comprehensive collection of APIs. "
+          }
         </Typography>
+      </Box>
 
-        <Box component="footer" sx={{ mt: 6 }}>
-          <Typography variant="caption" color="text.secondary">
-            Powered by Next.js & Material UI
-          </Typography>
-        </Box>
-      </Stack>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(4, 1fr)'
+          },
+          gap: 3,
+          maxWidth: '1200px',
+          width: '100%',
+          margin: '0 auto',
+          justifyItems: 'center'
+        }}
+      >
+        <CustomCard value="2,847" label="Images Today" />
+        <CustomCard value="156" label="Earth Events" />
+        <CustomCard value="23" label="Near Asteroids" />
+        <CustomCard value="1,234" label="Mars Photos" />
+      </Box>
     </Container>
   )
 }
