@@ -17,7 +17,8 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true
-  }
+  },
+  transpilePackages: ['@mui/material', '@mui/icons-material']
 }
 
 module.exports = nextConfig
