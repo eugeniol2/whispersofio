@@ -18,8 +18,22 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="xl">
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: '2fr 1fr 1fr 1fr'
+            },
+            gap: 4
+          }}
+        >
+          <Box
+            sx={{
+              gridColumn: { xs: '1', md: '1' },
+              maxWidth: { md: '600px' }
+            }}
+          >
             <Typography
               variant="h5"
               gutterBottom
@@ -35,9 +49,9 @@ const Footer = () => {
             <Typography variant="body2" sx={{ mt: 2 }}>
               © 2025 NASA Explorer. Data provided by NASA Open Data Portal.
             </Typography>
-          </Grid>
+          </Box>
 
-          <Grid item xs={6} md={2}>
+          <Box sx={{ justifySelf: { md: 'start' } }}>
             <Typography
               variant="h6"
               gutterBottom
@@ -72,9 +86,9 @@ const Footer = () => {
                 </Link>
               </li>
             </Box>
-          </Grid>
+          </Box>
 
-          <Grid item xs={6} md={2}>
+          <Box sx={{ justifySelf: { md: 'start' } }}>
             <Typography
               variant="h6"
               gutterBottom
@@ -99,8 +113,8 @@ const Footer = () => {
                 </Link>
               </li>
             </Box>
-          </Grid>
-          <Grid item xs={6} md={2}>
+          </Box>
+          <Box>
             <Typography
               variant="h6"
               gutterBottom
@@ -120,8 +134,8 @@ const Footer = () => {
                 </Link>
               </li>
             </Box>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
         <Divider sx={{ my: 4, borderColor: theme.palette.border.mainBorder }} />
         <Typography variant="body2" align="center">
           {
