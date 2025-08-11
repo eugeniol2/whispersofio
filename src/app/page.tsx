@@ -3,13 +3,20 @@
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import { Box, Container, Typography, useTheme } from '@mui/material'
 
-import { CustomCard } from './components/common/CustomCard'
+import { InfoCard } from './components/common/CustomCard'
+import { CustomCard } from './components/common/ImageCard'
 
 export default function Home() {
   const theme = useTheme()
 
   return (
-    <Container maxWidth="xl" sx={{ py: 8 }}>
+    <Container
+      maxWidth="xl"
+      sx={{
+        py: 8,
+        '& > *:not(:last-child)': { mb: 8 }
+      }}
+    >
       <Box
         sx={{
           textAlign: 'center',
@@ -64,11 +71,15 @@ export default function Home() {
           justifyItems: 'center'
         }}
       >
-        <CustomCard value="2,847" label="Images Today" />
-        <CustomCard value="156" label="Earth Events" />
-        <CustomCard value="23" label="Near Asteroids" />
-        <CustomCard value="1,234" label="Mars Photos" />
+        <InfoCard value="2,847" label="Images Today" />
+        <InfoCard value="156" label="Earth Events" />
+        <InfoCard value="23" label="Near Asteroids" />
+        <InfoCard value="1,234" label="Mars Photos" />
       </Box>
+      <CustomCard
+        image="https://stsci-opo.org/STScI-01HYGK7PC1NBR9N26JAJ97W1XR.png"
+        title="title"
+      />
     </Container>
   )
 }

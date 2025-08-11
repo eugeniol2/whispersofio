@@ -8,7 +8,7 @@ interface CustomCardProps {
   icon?: React.ReactNode
 }
 
-export const CustomCard = ({ value, label, icon }: CustomCardProps) => {
+export const InfoCard = ({ value, label, icon }: CustomCardProps) => {
   return (
     <Card
       sx={{
