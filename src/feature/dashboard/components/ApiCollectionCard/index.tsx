@@ -1,6 +1,5 @@
-// components/ApiCollectionCard.tsx
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import ImageIcon from '@mui/icons-material/Image' // example placeholder icon
+import ImageIcon from '@mui/icons-material/Image'
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material'
 
 interface ApiCollectionCardProps {

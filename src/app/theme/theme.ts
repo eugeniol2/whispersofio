@@ -1,4 +1,3 @@
-// src/types/mui.d.ts (or a similar location)
 import '@mui/material/styles'
 
 import { createTheme } from '@mui/material/styles'
@@ -22,7 +21,7 @@ declare module '@mui/material/styles' {
   }
 }
 
-const headingGradient = {
+export const headingGradient = {
   background: `linear-gradient(90deg, #4A1E6A, #00C2C2)`,
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',

@@ -1,16 +1,8 @@
 import {
-  CameraAlt as CameraIcon,
-  Public as GlobeIcon,
-  Satellite as SatelliteIcon
-} from '@mui/icons-material'
-import {
   Avatar,
-  Box,
-  Button,
   Card,
   CardContent,
   List,
-  ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
@@ -19,29 +11,21 @@ import {
 } from '@mui/material'
 import React from 'react'
 
-export const RecentActivity = () => {
-  const theme = useTheme()
+import { getActivityIcon } from '@/app/utils/getActivityIcon '
 
-  const activities = [
-    {
-      id: 1,
-      icon: <CameraIcon sx={{ color: theme.palette.secondary.main }} />,
-      title: 'New APOD image available',
-      timestamp: '2 hours ago'
-    },
-    {
-      id: 2,
-      icon: <GlobeIcon sx={{ color: theme.palette.secondary.main }} />,
-      title: 'Earthquake detected in Pacific Ocean',
-      timestamp: '5 hours ago'
-    },
-    {
-      id: 3,
-      icon: <SatelliteIcon sx={{ color: theme.palette.secondary.main }} />,
-      title: 'Perseverance rover sent 47 new images',
-      timestamp: '1 day ago'
-    }
-  ]
+export interface Activity {
+  id: number | string
+  type: string
+  title: string
+  timestamp: string
+}
+
+interface RecentActivityProps {
+  activities: Activity[]
+}
+
+export const RecentActivity = ({ activities }: RecentActivityProps) => {
+  const theme = useTheme()
 
   return (
     <Card
@@ -56,7 +40,7 @@ export const RecentActivity = () => {
     >
       <CardContent sx={{ p: 3 }}>
         <List sx={{ py: 1 }}>
-          {activities.map((activity, index) => (
+          {activities.map(activity => (
             <ListItemButton key={activity.id} sx={{ py: 1.5 }}>
               <ListItemAvatar>
                 <Avatar
@@ -67,7 +51,7 @@ export const RecentActivity = () => {
                     border: `1px solid ${theme.palette.border.mainBorder}`
                   }}
                 >
-                  {activity.icon}
+                  {getActivityIcon(activity.type)}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText

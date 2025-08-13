@@ -17,7 +17,7 @@ interface CardProps {
   title: string
 }
 
-export const CustomCard = ({ image, title }: CardProps) => {
+export const ImageCard = ({ image, title }: CardProps) => {
   const theme = useTheme()
 
   return (

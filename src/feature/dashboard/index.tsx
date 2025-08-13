@@ -6,11 +6,11 @@ import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import { Box, Button, Container, Typography } from '@mui/material'
 
-import theme from '@/app/theme/theme'
+import { activities } from '@/mock'
 
 import { ApiCollectionCard } from './components/ApiCollectionCard'
-import { InfoCard } from './components/CustomCard'
-import { CustomCard } from './components/ImageCard'
+import { ImageCard } from './components/ImageCard'
+import { InfoCard } from './components/InfoCard'
 import { RecentActivity } from './components/RecentActivity'
 
 export const DashBoard = () => {
@@ -38,9 +38,6 @@ export const DashBoard = () => {
           sx={{
             fontWeight: 700,
             mb: 3,
-            background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
             lineHeight: 1.2
           }}
         >
@@ -81,7 +78,7 @@ export const DashBoard = () => {
         <InfoCard value="23" label="Near Asteroids" />
         <InfoCard value="1,234" label="Mars Photos" />
       </Box>
-      <CustomCard
+      <ImageCard
         image="https://stsci-opo.org/STScI-01HYGK7PC1NBR9N26JAJ97W1XR.png"
         title="title"
       />
@@ -156,7 +153,7 @@ export const DashBoard = () => {
           View All
         </Button>
       </Box>
-      <RecentActivity />
+      <RecentActivity activities={activities} />
     </Container>
   )
 }
