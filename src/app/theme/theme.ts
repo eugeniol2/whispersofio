@@ -171,6 +171,16 @@ const theme = createTheme({
         h2: headingGradient,
         h3: headingGradient
       }
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&:not(:last-child)': {
+            borderBottom: `1px solid ${theme.palette.border.mainBorder}`,
+            marginBottom: theme.spacing(1)
+          }
+        })
+      }
     }
   }
 })

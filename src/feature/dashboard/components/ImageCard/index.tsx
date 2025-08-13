@@ -90,7 +90,6 @@ export const CustomCard = ({ image, title }: CardProps) => {
           sx={{
             fontWeight: 700,
             mb: 2,
-            background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}
@@ -106,15 +105,16 @@ export const CustomCard = ({ image, title }: CardProps) => {
 
         <Button
           component="a"
-          variant="outlined"
+          variant="contained"
           sx={{
             borderColor: theme.palette.primary.main,
-            color: theme.palette.primary.main,
+            color: theme.palette.common.white,
             transition: 'background-color 0.4s ease, color 0.4s ease',
             '&:hover': {
               backgroundColor: theme.palette.primary.light,
               color: theme.palette.primary.contrastText
-            }
+            },
+            fontSize: '16px'
           }}
         >
           View Full Image

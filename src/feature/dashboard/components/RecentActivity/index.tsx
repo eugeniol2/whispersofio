@@ -12,6 +12,7 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Typography,
   useTheme
@@ -54,61 +55,15 @@ export const RecentActivity = () => {
       }}
     >
       <CardContent sx={{ p: 3 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 3
-          }}
-        >
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{
-              fontWeight: 600,
-              color: 'text.primary'
-            }}
-          >
-            Recent Activity
-          </Typography>
-          <Button
-            variant="text"
-            size="small"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              color: theme.palette.secondary.main,
-              '&:hover': {
-                color: theme.palette.secondary.light
-              }
-            }}
-          >
-            View All
-          </Button>
-        </Box>
-
-        <List sx={{ p: 0 }}>
+        <List sx={{ py: 1 }}>
           {activities.map((activity, index) => (
-            <ListItem
-              key={activity.id}
-              sx={{
-                px: 0,
-                py: 1.5,
-                ...(index < activities.length - 1 && { mb: 1 }),
-                borderBottom:
-                  index < activities.length - 1
-                    ? `1px solid ${theme.palette.border.mainBorder}`
-                    : 'none'
-              }}
-            >
+            <ListItemButton key={activity.id} sx={{ py: 1.5 }}>
               <ListItemAvatar>
                 <Avatar
                   sx={{
                     width: 36,
                     height: 36,
-                    bgcolor: theme.palette.background.default,
+                    bgcolor: 'background.default',
                     border: `1px solid ${theme.palette.border.mainBorder}`
                   }}
                 >
@@ -119,11 +74,7 @@ export const RecentActivity = () => {
                 primary={
                   <Typography
                     variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      color: 'text.primary',
-                      lineHeight: 1.4
-                    }}
+                    sx={{ fontWeight: 500, lineHeight: 1.4 }}
                   >
                     {activity.title}
                   </Typography>
@@ -131,18 +82,14 @@ export const RecentActivity = () => {
                 secondary={
                   <Typography
                     variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                      mt: 0.5,
-                      display: 'block'
-                    }}
+                    sx={{ mt: 0.5, display: 'block' }}
                   >
                     {activity.timestamp}
                   </Typography>
                 }
                 sx={{ ml: 1.5 }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </CardContent>

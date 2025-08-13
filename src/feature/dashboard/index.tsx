@@ -4,7 +4,7 @@ import PublicIcon from '@mui/icons-material/Public'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 
 import theme from '@/app/theme/theme'
 
@@ -133,6 +133,28 @@ export const DashBoard = () => {
           description="Explore additional NASA APIs including weather data, satellite imagery, and more."
           footerText="Coming soon"
         />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3
+        }}
+      >
+        <Typography
+          variant="h2"
+          component="h2"
+          sx={{
+            fontWeight: 600,
+            color: 'text.primary'
+          }}
+        >
+          Recent Activity
+        </Typography>
+        <Button variant="contained" size="small" sx={{ textTransform: 'none' }}>
+          View All
+        </Button>
       </Box>
       <RecentActivity />
     </Container>
