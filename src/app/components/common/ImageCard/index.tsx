@@ -70,12 +70,6 @@ export const CustomCard = ({ image, title }: CardProps) => {
           justifyContent: 'center'
         }}
       >
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" component="h2" sx={{ fontWeight: 700 }}>
-            Featured Content
-          </Typography>
-        </Box>
-
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Chip
             label="APOD"
