@@ -11,6 +11,7 @@ import theme from '@/app/theme/theme'
 import { ApiCollectionCard } from './components/ApiCollectionCard'
 import { InfoCard } from './components/CustomCard'
 import { CustomCard } from './components/ImageCard'
+import { RecentActivity } from './components/RecentActivity'
 
 export const DashBoard = () => {
   return (
@@ -133,6 +134,7 @@ export const DashBoard = () => {
           footerText="Coming soon"
         />
       </Box>
+      <RecentActivity />
     </Container>
   )
 }

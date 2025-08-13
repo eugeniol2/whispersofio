@@ -5,10 +5,9 @@ import theme from '@/app/theme/theme'
 interface CustomCardProps {
   value: string
   label: string
-  icon?: React.ReactNode
 }
 
-export const InfoCard = ({ value, label, icon }: CustomCardProps) => {
+export const InfoCard = ({ value, label }: CustomCardProps) => {
   return (
     <Card
       sx={{
@@ -34,16 +33,6 @@ export const InfoCard = ({ value, label, icon }: CustomCardProps) => {
           textAlign: 'center'
         }}
       >
-        {icon && (
-          <Box
-            sx={{
-              color: theme.palette.primary.main
-            }}
-          >
-            {icon}
-          </Box>
-        )}
-
         <Box
           sx={{
             display: 'flex',

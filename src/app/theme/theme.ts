@@ -22,6 +22,14 @@ declare module '@mui/material/styles' {
   }
 }
 
+const headingGradient = {
+  background: `linear-gradient(90deg, #4A1E6A, #00C2C2)`,
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+  color: 'transparent'
+}
+
 const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -148,6 +156,20 @@ const theme = createTheme({
             paddingBottom: '0px'
           }
         }
+      }
+    },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          color: '#00C2C2'
+        }
+      }
+    },
+    MuiTypography: {
+      styleOverrides: {
+        h1: headingGradient,
+        h2: headingGradient,
+        h3: headingGradient
       }
     }
   }
