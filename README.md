@@ -16,6 +16,4 @@ The project is currently **in development**.
 
 First, install the dependencies:
 ```bash
-npm install
-# or
-yarn install
+
