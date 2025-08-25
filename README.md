@@ -15,5 +15,5 @@ The project is currently **in development**.
 ## Getting Started
 
 First, install the dependencies:
-```bash
+
 
