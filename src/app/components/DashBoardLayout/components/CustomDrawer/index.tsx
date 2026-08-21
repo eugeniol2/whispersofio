@@ -17,6 +17,7 @@ import {
   ListItemText,
   Toolbar
 } from '@mui/material'
+import Link from 'next/link'
 
 import theme from '@/app/theme/theme'
 
@@ -80,6 +81,9 @@ export const CustomDrawer = ({
           {navItems.map(item => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
+                component={Link}
+                href={item.path}
+                onClick={drawerToggleFunction}
                 sx={{
                   py: 2
                 }}
