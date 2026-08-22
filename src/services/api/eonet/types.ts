@@ -1,0 +1,43 @@
+export type EonetCategoryId =
+  | 'wildfires'
+  | 'severeStorms'
+  | 'volcanoes'
+  | 'seaLakeIce'
+  | 'earthquakes'
+  | 'drought'
+  | 'dustHaze'
+  | 'floods'
+  | 'landslides'
+  | 'manmade'
+  | 'snow'
+  | 'tempExtremes'
+  | 'waterColor'
+
+export interface EonetCategory {
+  id: EonetCategoryId
+  title: string
+}
+
+export interface EonetSource {
+  id: string
+  url: string
+}
+
+export interface EonetGeometry {
+  date: string
+  type: 'Point' | 'Polygon'
+  coordinates: number[]
+}
+
+export interface EonetEvent {
+  id: string
+  title: string
+  description: string | null
+  link: string
+  closed: string | null
+  categories: EonetCategory[]
+  sources: EonetSource[]
+  geometry: EonetGeometry[]
+}
+
+export type EonetStatusFilter = 'open' | 'closed' | 'all'
