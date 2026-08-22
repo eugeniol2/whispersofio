@@ -23,11 +23,20 @@ import { ApodFeaturedCard } from './components/ApodFeaturedCard'
 import { ApodStats } from './components/ApodStats'
 import { ApodThumbnailCard } from './components/ApodThumbnailCard'
 
-const DEFAULT_DATE = '2025-01-15'
+const APOD_ARCHIVE_URL = 'https://apod.nasa.gov/apod/archivepix.html'
+
+// NASA publishes on US Eastern time, so the most recent guaranteed entry is
+// yesterday in UTC terms.
+const getLatestApodDate = () => {
+  const date = new Date()
+  date.setDate(date.getDate() - 1)
+  return date.toISOString().slice(0, 10)
+}
 
 export function Apod() {
-  const [draftDate, setDraftDate] = useState(DEFAULT_DATE)
-  const [committedDate, setCommittedDate] = useState(DEFAULT_DATE)
+  const latestDate = getLatestApodDate()
+  const [draftDate, setDraftDate] = useState(latestDate)
+  const [committedDate, setCommittedDate] = useState(latestDate)
   const [mode, setMode] = useState<'date' | 'random'>('date')
   const [randomToken, setRandomToken] = useState(0)
 
@@ -76,6 +85,7 @@ export function Apod() {
       <ApodControls
         date={draftDate}
         onDateChange={setDraftDate}
+        maxDate={latestDate}
         onGetApod={handleGetApod}
         onRandom={handleRandom}
         loading={featuredQuery.isFetching}
@@ -106,7 +116,13 @@ export function Apod() {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Recent APOD Images
         </Typography>
-        <Link href="#" underline="hover" color="secondary">
+        <Link
+          href={APOD_ARCHIVE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          underline="hover"
+          color="secondary"
+        >
           View Archive
         </Link>
       </Stack>

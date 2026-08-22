@@ -7,6 +7,7 @@ import { Button, Card, Stack, TextField, Typography } from '@mui/material'
 interface ApodControlsProps {
   date: string
   onDateChange: (date: string) => void
+  maxDate: string
   onGetApod: () => void
   onRandom: () => void
   loading?: boolean
@@ -15,6 +16,7 @@ interface ApodControlsProps {
 export const ApodControls = ({
   date,
   onDateChange,
+  maxDate,
   onGetApod,
   onRandom,
   loading = false
@@ -35,6 +37,7 @@ export const ApodControls = ({
           size="small"
           value={date}
           onChange={event => onDateChange(event.target.value)}
+          slotProps={{ htmlInput: { min: '1995-06-16', max: maxDate } }}
         />
       </Stack>
       <Stack direction="row" spacing={1.5}>
