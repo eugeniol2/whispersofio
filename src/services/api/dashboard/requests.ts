@@ -112,7 +112,6 @@ interface DashboardActivityResponse {
   id: string
   title: string
   date: string
-  url: string
 }
 
 export async function fetchDashboardActivity(): Promise<
@@ -130,7 +129,6 @@ export async function fetchDashboardActivity(): Promise<
     id: item.id,
     icon: 'earthEvents',
     title: item.title,
-    timestamp: formatRelativeTime(item.date),
-    url: item.url
+    timestamp: formatRelativeTime(item.date)
   }))
 }

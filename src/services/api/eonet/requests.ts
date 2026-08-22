@@ -72,6 +72,19 @@ export async function fetchEonetEvents({
   return data.events
 }
 
+export async function fetchEonetEventById(
+  id: string,
+  signal?: AbortSignal
+): Promise<EonetEvent> {
+  const response = await fetch(`${EONET_BASE_URL}/events/${id}`, { signal })
+
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch EONET event')
+  }
+
+  return response.json()
+}
+
 interface FetchAvailableCategoryIdsParams {
   status: EonetStatusFilter
   timeRange: EonetTimeRange

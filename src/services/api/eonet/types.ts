@@ -28,6 +28,8 @@ export interface EonetGeometry {
   type: 'Point' | 'Polygon'
   // Point: [lon, lat]. Polygon: rings of [lon, lat] pairs, GeoJSON-style.
   coordinates: number[] | number[][][]
+  magnitudeValue?: number | null
+  magnitudeUnit?: string | null
 }
 
 export interface EonetEvent {

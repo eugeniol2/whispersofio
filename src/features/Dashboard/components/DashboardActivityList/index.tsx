@@ -1,4 +1,5 @@
 import { Box, Divider, Paper, Stack, Typography } from '@mui/material'
+import Link from 'next/link'
 
 import type { DashboardActivityItem } from '@/services/api/dashboard/types'
 import theme from '@/theme/theme'
@@ -32,10 +33,8 @@ export const DashboardActivityList = ({
       return (
         <Stack key={item.id}>
           <Box
-            component="a"
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            component={Link}
+            href={`/earth-events/${item.id}`}
             sx={{
               display: 'block',
               textDecoration: 'none',

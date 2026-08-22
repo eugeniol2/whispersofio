@@ -6,6 +6,7 @@ import { queryKeys } from '../queryKeys'
 import {
   fetchAvailableCategoryIds,
   fetchEonetCategories,
+  fetchEonetEventById,
   fetchEonetEvents
 } from './requests'
 import type {
@@ -19,6 +20,13 @@ export function useEonetCategoriesQuery() {
   return useQuery({
     queryKey: queryKeys.eonet.categories,
     queryFn: ({ signal }) => fetchEonetCategories(signal)
+  })
+}
+
+export function useEonetEventQuery(id: string) {
+  return useQuery({
+    queryKey: queryKeys.eonet.eventById(id),
+    queryFn: ({ signal }) => fetchEonetEventById(id, signal)
   })
 }
 

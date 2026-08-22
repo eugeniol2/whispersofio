@@ -25,10 +25,14 @@ export const queryKeys = {
       timeRange: string
     ) => ['eonet', 'events', status, categoryId, limit, timeRange] as const,
     categoryAvailability: (status: string, timeRange: string) =>
-      ['eonet', 'categoryAvailability', status, timeRange] as const
+      ['eonet', 'categoryAvailability', status, timeRange] as const,
+    eventById: (id: string) => ['eonet', 'eventById', id] as const
   },
   geocoding: {
     reverse: (lat: number, lon: number) =>
       ['geocoding', 'reverse', lat, lon] as const
+  },
+  zoomEarth: {
+    linkValid: (slug: string) => ['zoomEarth', 'linkValid', slug] as const
   }
 }

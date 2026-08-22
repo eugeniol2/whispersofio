@@ -12,7 +12,6 @@ export interface DashboardActivityPayload {
   id: string
   title: string
   date: string
-  url: string
 }
 
 const activityCache = createServerCache<DashboardActivityPayload[]>(REVALIDATE_MS)
@@ -20,8 +19,6 @@ const activityCache = createServerCache<DashboardActivityPayload[]>(REVALIDATE_M
 interface EonetEvent {
   id: string
   title: string
-  link: string
-  sources: { url: string }[]
   geometry: { date: string }[]
 }
 
@@ -56,8 +53,7 @@ export async function GET() {
       .map(event => ({
         id: event.id,
         title: event.title,
-        date: event.geometry[event.geometry.length - 1]?.date,
-        url: event.sources[0]?.url ?? event.link
+        date: event.geometry[event.geometry.length - 1]?.date
       }))
       .filter((item): item is DashboardActivityPayload => Boolean(item.date))
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
