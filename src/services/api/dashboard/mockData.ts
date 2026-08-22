@@ -1,4 +1,4 @@
-import type { DashboardActivityItem, DashboardApiCollection } from './types'
+import type { DashboardApiCollection } from './types'
 
 export const mockDashboardApiCollections: DashboardApiCollection[] = [
   {
@@ -54,26 +54,5 @@ export const mockDashboardApiCollections: DashboardApiCollection[] = [
       'Explore additional NASA APIs including weather data, satellite imagery, and more.',
     caption: 'Coming soon',
     href: null
-  }
-]
-
-export const mockDashboardActivity: DashboardActivityItem[] = [
-  {
-    id: 'activity-apod',
-    icon: 'apod',
-    title: 'New APOD image available',
-    timestamp: '2 hours ago'
-  },
-  {
-    id: 'activity-earth-events',
-    icon: 'earthEvents',
-    title: 'Earthquake detected in Pacific Ocean',
-    timestamp: '5 hours ago'
-  },
-  {
-    id: 'activity-mars-rover',
-    icon: 'marsRover',
-    title: 'Perseverance rover sent 47 new images',
-    timestamp: '1 day ago'
   }
 ]

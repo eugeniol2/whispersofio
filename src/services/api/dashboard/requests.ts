@@ -1,5 +1,7 @@
+import { formatRelativeTime } from '@/utils/formatRelativeTime'
+
 import { ApiError } from '../client'
-import { mockDashboardActivity, mockDashboardApiCollections } from './mockData'
+import { mockDashboardApiCollections } from './mockData'
 import type {
   DashboardActivityItem,
   DashboardApiCollection,
@@ -8,8 +10,8 @@ import type {
 } from './types'
 
 // The dashboard aggregates data from several NASA endpoints (APOD, EONET,
-// Mars rover photos, NeoWs). Featured Content and Stats are already live
-// (see below); API Collections and Activity are still mock.
+// Mars rover photos, NeoWs). Featured Content, Stats, and Activity are
+// already live (see below); only API Collections is still mock.
 
 const MOCK_LATENCY_MS = 400
 
@@ -106,9 +108,27 @@ export async function fetchDashboardApiCollections(): Promise<
   return mockDashboardApiCollections
 }
 
+interface DashboardActivityResponse {
+  id: string
+  title: string
+  date: string
+}
+
 export async function fetchDashboardActivity(): Promise<
   DashboardActivityItem[]
 > {
-  await delay(MOCK_LATENCY_MS)
-  return mockDashboardActivity
+  const response = await fetch('/api/dashboard-activity')
+
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch recent activity')
+  }
+
+  const data: DashboardActivityResponse[] = await response.json()
+
+  return data.map(item => ({
+    id: item.id,
+    icon: 'earthEvents',
+    title: item.title,
+    timestamp: formatRelativeTime(item.date)
+  }))
 }
