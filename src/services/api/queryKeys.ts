@@ -39,5 +39,10 @@ export const queryKeys = {
     search: (query: string, mediaType: string, page: number) =>
       ['nasaImages', 'search', query, mediaType, page] as const,
     video: (nasaId: string) => ['nasaImages', 'video', nasaId] as const
+  },
+  asteroids: {
+    feed: (range: string) => ['asteroids', 'feed', range] as const,
+    visibility: (id: string, date: string) =>
+      ['asteroids', 'visibility', id, date] as const
   }
 }
