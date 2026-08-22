@@ -34,5 +34,10 @@ export const queryKeys = {
   },
   zoomEarth: {
     linkValid: (slug: string) => ['zoomEarth', 'linkValid', slug] as const
+  },
+  nasaImages: {
+    search: (query: string, mediaType: string, page: number) =>
+      ['nasaImages', 'search', query, mediaType, page] as const,
+    video: (nasaId: string) => ['nasaImages', 'video', nasaId] as const
   }
 }
