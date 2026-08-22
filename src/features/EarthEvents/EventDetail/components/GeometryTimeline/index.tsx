@@ -8,9 +8,6 @@ interface GeometryTimelineProps {
   geometry: EonetGeometry[]
 }
 
-// Most events have a single position, but multi-day events (storms in
-// particular) carry a full history of timestamped positions — worth
-// showing here since the list/card views only have room for the latest.
 export const GeometryTimeline = ({ geometry }: GeometryTimelineProps) => {
   const points = [...geometry].reverse()
 

@@ -2,9 +2,6 @@ import { ApiError } from '../client'
 import { BIGDATACLOUD_BASE_URL } from '../endpoints'
 import type { ReverseGeocodeResult } from './types'
 
-// BigDataCloud's reverse-geocode-client endpoint is free, keyless, and
-// CORS-open — no secret to protect, so this calls straight from the
-// browser like EONET does.
 interface BigDataCloudResponse {
   city: string
   locality: string

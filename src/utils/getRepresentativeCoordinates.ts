@@ -1,8 +1,5 @@
 import type { EonetGeometry } from '@/services/api/eonet/types'
 
-// Point coordinates are a flat [lon, lat] pair. Polygon coordinates are
-// GeoJSON-style rings of [lon, lat] pairs — use the first vertex as a
-// representative point for display.
 export function getRepresentativeCoordinates(
   geometry: EonetGeometry
 ): [number, number] {

@@ -9,13 +9,6 @@ import type {
   EonetTimeRange
 } from './types'
 
-// EONET needs no API key, so — unlike Apod/Dashboard — these calls go
-// straight from the browser rather than through one of our own cached
-// Route Handlers. There's no secret to protect, and the status/category
-// filter surface means many distinct queries rather than one canonical
-// value worth server-caching; React Query's own per-query client cache
-// is the right fit here.
-
 const TIME_RANGE_DAYS: Record<Exclude<EonetTimeRange, 'all'>, number> = {
   today: 1,
   week: 7,
@@ -38,10 +31,6 @@ export async function fetchEonetCategories(
 interface FetchEonetEventsParams {
   status: EonetStatusFilter
   categoryId?: string
-  // EONET has ~7,000 open events with no limit param — 'unlimited' fetches
-  // and renders all of them, so it's an explicit opt-in, not the default.
-  // Widened beyond EonetLimit's UI options so category-availability probes
-  // below can pass limit: 1.
   limit: EonetLimit | number
   timeRange: EonetTimeRange
   signal?: AbortSignal
@@ -92,9 +81,6 @@ interface FetchAvailableCategoryIdsParams {
   signal?: AbortSignal
 }
 
-// EONET has no "counts per category" endpoint, so this probes each
-// category with a cheap limit:1 request in parallel and keeps only the
-// ones that actually return a result under the current status/time range.
 export async function fetchAvailableCategoryIds({
   status,
   timeRange,

@@ -26,7 +26,6 @@ export interface EonetSource {
 export interface EonetGeometry {
   date: string
   type: 'Point' | 'Polygon'
-  // Point: [lon, lat]. Polygon: rings of [lon, lat] pairs, GeoJSON-style.
   coordinates: number[] | number[][][]
   magnitudeValue?: number | null
   magnitudeUnit?: string | null

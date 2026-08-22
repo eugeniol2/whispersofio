@@ -1,10 +1,5 @@
 import type { EonetEvent } from '@/services/api/eonet/types'
 
-// zoom.earth only has dedicated per-event pages (e.g. zoom.earth/storms/
-// saudel-2026/) for named tropical cyclone systems — EONET's severeStorms
-// category. Wildfires, earthquakes, volcanoes etc. only appear there as
-// generic map overlays with no individual permalinks, so this can never
-// apply outside of storms.
 const STORM_TYPE_PREFIX =
   /^(super typhoon|severe tropical storm|post-tropical cyclone|tropical depression|tropical cyclone|tropical storm|subtropical storm|typhoon|hurricane|cyclone)\s+/i
 

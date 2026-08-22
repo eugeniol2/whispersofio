@@ -1,7 +1,5 @@
 import type { RoverCamera, RoverInfo, RoverName } from './types'
 
-// Camera codes match NASA's real Mars Rover Photos API
-// (https://api.nasa.gov/mars-photos/api/v1/rovers/{rover}/photos).
 export const roverCameras: Record<RoverName, RoverCamera[]> = {
   curiosity: [
     { name: 'FHAZ', fullName: 'Front Hazard Avoidance Camera' },

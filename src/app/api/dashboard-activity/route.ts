@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server'
 import { EONET_BASE_URL } from '@/services/api/endpoints'
 import { createServerCache } from '@/services/api/serverCache'
 
-// NASA has no "activity feed" endpoint — this surfaces the most recently
-// updated EONET events instead, which is the closest real equivalent.
 const REVALIDATE_MS = 60 * 60 * 1000
 const ACTIVITY_LIMIT = 5
 

@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server'
 import { apiClient, ApiError } from '@/services/api/client'
 import { createServerCache } from '@/services/api/serverCache'
 
-// APOD only publishes once a day, so there's no reason to hit NASA on
-// every request.
 const REVALIDATE_MS = 60 * 60 * 4 * 1000
 
 const apodCache = createServerCache<unknown>(REVALIDATE_MS)

@@ -49,9 +49,6 @@ export function EarthEvents() {
       )
     : (categoriesQuery.data ?? [])
 
-  // If the selected category has no events under the new status/time
-  // range, it disappears from the options above — fall back to "all"
-  // rather than leaving a hidden, stale selection in place.
   useEffect(() => {
     if (
       categoryId !== 'all' &&

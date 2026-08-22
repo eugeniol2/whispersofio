@@ -1,7 +1,5 @@
 import { NASA_API_BASE_URL } from './endpoints'
 
-// Server-only: this file must never be imported from a 'use client'
-// component, or the API key would be inlined into the browser bundle.
 const NASA_API_KEY = process.env.NASA_API_KEY ?? 'DEMO_KEY'
 
 export class ApiError extends Error {

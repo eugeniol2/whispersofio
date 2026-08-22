@@ -10,11 +10,6 @@ interface DashboardActivityListProps {
   items: DashboardActivityItem[]
 }
 
-// Uses Paper rather than Card here — Card's theme-wide hover lift makes
-// sense for a single clickable surface, but this list holds several
-// independently-clickable rows, so the whole block lifting on hover
-// (regardless of which row you're over) reads as broken rather than
-// interactive. Each row gets its own hover highlight instead.
 export const DashboardActivityList = ({
   items
 }: DashboardActivityListProps) => (

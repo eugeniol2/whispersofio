@@ -95,9 +95,6 @@ function EventDetailContent({ event, onCopyLink }: EventDetailContentProps) {
     event.description ??
     (geocodeQuery.data ? formatGeocodeResult(geocodeQuery.data) : null)
 
-  // zoom.earth has no official pairing with EONET — the slug is guessed
-  // from the storm's title, then confirmed server-side before we ever
-  // show the link (see /api/zoom-earth-link).
   const zoomEarthSlug = getZoomEarthStormSlug(event)
   const zoomEarthQuery = useZoomEarthLinkQuery(zoomEarthSlug)
   const zoomEarthUrl =

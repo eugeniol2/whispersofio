@@ -1,17 +1,6 @@
 import { mockRoverInfo, roverCameras } from './mockData'
 import type { MarsPhoto, RoverInfo, RoverName } from './types'
 
-// Stand-in for NASA's real Mars Rover Photos API
-// (https://api.nasa.gov/mars-photos/api/v1/rovers/{rover}/photos?sol=X&camera=Y)
-// and its manifest endpoint (.../rovers/{rover}). Both exports already have
-// the async shape a real request would have, so swapping the body for a real
-// fetch is a drop-in change:
-//
-//   export async function fetchRoverInfo(rover: RoverName): Promise<RoverInfo> {
-//     const { photo_manifest } = await apiClient(`/mars-photos/api/v1/rovers/${rover}`)
-//     return photo_manifest
-//   }
-
 const MOCK_LATENCY_MS = 400
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

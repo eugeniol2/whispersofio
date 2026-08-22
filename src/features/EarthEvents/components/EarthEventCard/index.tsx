@@ -22,9 +22,6 @@ export const EarthEventCard = ({ event }: EarthEventCardProps) => {
   const [lon, lat] = getRepresentativeCoordinates(latestGeometry)
   const isOpen = event.closed === null
 
-  // EONET's own description sometimes already has a readable location
-  // (e.g. "9 Miles N from Reed Point, MT") — only reverse-geocode when
-  // it doesn't, since that's the common case and saves a lookup.
   const geocodeQuery = useReverseGeocodeQuery(lat, lon, !event.description)
   const locationText =
     event.description ??

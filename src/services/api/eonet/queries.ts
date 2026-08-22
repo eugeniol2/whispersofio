@@ -36,8 +36,6 @@ interface UseEonetCategoryAvailabilityQueryParams {
   categoryIds: EonetCategoryId[]
 }
 
-// Which categories actually have at least one event under the current
-// status/time range — used to hide empty options from the Category select.
 export function useEonetCategoryAvailabilityQuery({
   status,
   timeRange,
@@ -75,9 +73,6 @@ export function useEonetEventsQuery({
         timeRange,
         signal
       }),
-    // Filters apply immediately (no Search button) — keep the current
-    // results on screen while the new combination loads instead of
-    // flashing a blank spinner on every change.
     placeholderData: keepPreviousData
   })
 }

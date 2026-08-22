@@ -1,4 +1,3 @@
-// src/components/Footer.tsx
 import { Box, Container, Divider, Grid, Link, Typography } from '@mui/material'
 import React from 'react'
 

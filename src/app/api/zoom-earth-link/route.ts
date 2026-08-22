@@ -1,12 +1,5 @@
 import { NextResponse } from 'next/server'
 
-// We only guess the zoom.earth URL from NASA's own storm title — there's
-// no official pairing between the two sites, so this confirms the guess
-// actually resolves before the client ever shows it. zoom.earth serves
-// 200 for a real storm page and redirects (3xx) to its homepage for a
-// slug that doesn't exist, so that distinction is exactly what we check.
-// A storm page never stops existing once created, so once verified,
-// cache indefinitely for the life of this server process.
 const verifiedSlugs = new Map<string, boolean>()
 
 export async function GET(request: Request) {

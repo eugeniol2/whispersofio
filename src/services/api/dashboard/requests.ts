@@ -9,10 +9,6 @@ import type {
   DashboardStat
 } from './types'
 
-// The dashboard aggregates data from several NASA endpoints (APOD, EONET,
-// Mars rover photos, NeoWs). Featured Content, Stats, and Activity are
-// already live (see below); only API Collections is still mock.
-
 const MOCK_LATENCY_MS = 400
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -33,8 +29,6 @@ export async function fetchDashboardStats(): Promise<DashboardStat[]> {
   const data: DashboardStatsResponse = await response.json()
   const stats: DashboardStat[] = []
 
-  // Each source is fetched independently server-side (see /api/dashboard-stats)
-  // and can fail on its own — only include stats that actually came back.
   if (data.earthEvents !== null) {
     stats.push({
       id: 'earth-events',
@@ -73,10 +67,6 @@ interface NasaApodApiResponse {
 }
 
 export async function fetchDashboardFeaturedContent(): Promise<DashboardFeaturedContent> {
-  // Goes through our own /api/apod route rather than calling NASA
-  // directly from the browser — that route caches the upstream response
-  // server-side (see REVALIDATE_SECONDS there), so every visitor shares
-  // one NASA request per revalidation window instead of one each.
   const response = await fetch('/api/apod')
 
   if (!response.ok) {

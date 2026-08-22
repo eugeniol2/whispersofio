@@ -4,8 +4,6 @@ import { apiClient, ApiError } from '@/services/api/client'
 import { EONET_BASE_URL } from '@/services/api/endpoints'
 import { createServerCache } from '@/services/api/serverCache'
 
-// Event/asteroid counts change more often than APOD, so a shorter window
-// than the APOD route's 4 hours still avoids hitting NASA on every visit.
 const REVALIDATE_MS = 60 * 60 * 1000
 
 interface DashboardStatsPayload {
@@ -21,7 +19,6 @@ interface EonetEventsResponse {
 }
 
 async function fetchEarthEventsCount(): Promise<number> {
-  // EONET lives on its own domain (not api.nasa.gov) and needs no API key.
   const response = await fetch(`${EONET_BASE_URL}/events?status=open`)
 
   if (!response.ok) {
@@ -49,9 +46,6 @@ interface MarsManifestResponse {
 }
 
 async function fetchMarsPhotosTotal(): Promise<number> {
-  // NASA's mars-photos backend has been observed fully down (Heroku "no
-  // such app") independent of path/key — this can legitimately fail even
-  // when the rest of the API is healthy, hence Promise.allSettled below.
   const data = await apiClient<MarsManifestResponse>(
     '/mars-photos/api/v1/manifests/curiosity'
   )
