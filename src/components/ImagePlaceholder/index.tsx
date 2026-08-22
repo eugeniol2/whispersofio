@@ -2,15 +2,17 @@ import { Box, Typography } from '@mui/material'
 
 import theme from '@/theme/theme'
 
-interface ApodImagePlaceholderProps {
+interface ImagePlaceholderProps {
   label: string
   height?: number | string
+  borderSide?: 'bottom' | 'right'
 }
 
-export const ApodImagePlaceholder = ({
+export const ImagePlaceholder = ({
   label,
-  height = 220
-}: ApodImagePlaceholderProps) => (
+  height = 220,
+  borderSide = 'bottom'
+}: ImagePlaceholderProps) => (
   <Box
     sx={{
       height,
@@ -21,7 +23,14 @@ export const ApodImagePlaceholder = ({
       px: 2,
       background:
         'linear-gradient(135deg, rgba(74, 30, 106, 0.4), rgba(0, 194, 194, 0.15))',
-      borderBottom: `1px solid ${theme.palette.border.mainBorder}`
+      borderBottom:
+        borderSide === 'bottom'
+          ? `1px solid ${theme.palette.border.mainBorder}`
+          : { xs: `1px solid ${theme.palette.border.mainBorder}`, md: 'none' },
+      borderRight:
+        borderSide === 'right'
+          ? { xs: 'none', md: `1px solid ${theme.palette.border.mainBorder}` }
+          : 'none'
     }}
   >
     <Typography

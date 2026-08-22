@@ -12,10 +12,9 @@ import {
   Typography
 } from '@mui/material'
 
+import { ImagePlaceholder } from '@/components/ImagePlaceholder'
 import type { ApodEntry } from '@/services/api/apod/types'
 import theme from '@/theme/theme'
-
-import { ApodImagePlaceholder } from '../ApodImagePlaceholder'
 
 interface ApodFeaturedCardProps {
   entry: ApodEntry
@@ -23,7 +22,7 @@ interface ApodFeaturedCardProps {
 
 export const ApodFeaturedCard = ({ entry }: ApodFeaturedCardProps) => (
   <Card>
-    <ApodImagePlaceholder label={entry.title} height={400} />
+    <ImagePlaceholder label={entry.title} height={400} />
     <CardContent sx={{ p: 3 }}>
       <Stack
         direction="row"

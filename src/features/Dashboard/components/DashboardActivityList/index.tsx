@@ -1,0 +1,50 @@
+import { Card, Divider, Stack, Typography } from '@mui/material'
+
+import type { DashboardActivityItem } from '@/services/api/dashboard/types'
+import theme from '@/theme/theme'
+
+import { dashboardIcons } from '../icons'
+
+interface DashboardActivityListProps {
+  items: DashboardActivityItem[]
+}
+
+export const DashboardActivityList = ({
+  items
+}: DashboardActivityListProps) => (
+  <Card>
+    {items.map((item, index) => {
+      const Icon = dashboardIcons[item.icon]
+
+      return (
+        <Stack key={item.id}>
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ p: 2.5 }}>
+            <Stack
+              alignItems="center"
+              justifyContent="center"
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'rgba(0, 194, 194, 0.12)',
+                color: theme.palette.secondary.main,
+                flexShrink: 0
+              }}
+            >
+              <Icon fontSize="small" />
+            </Stack>
+            <Stack>
+              <Typography variant="body1">{item.title}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {item.timestamp}
+              </Typography>
+            </Stack>
+          </Stack>
+          {index < items.length - 1 && (
+            <Divider sx={{ borderColor: theme.palette.border.mainBorder }} />
+          )}
+        </Stack>
+      )
+    })}
+  </Card>
+)

@@ -1,9 +1,8 @@
 import { Card, CardContent, Typography } from '@mui/material'
 
+import { ImagePlaceholder } from '@/components/ImagePlaceholder'
 import type { ApodEntry } from '@/services/api/apod/types'
 import theme from '@/theme/theme'
-
-import { ApodImagePlaceholder } from '../ApodImagePlaceholder'
 
 interface ApodThumbnailCardProps {
   entry: ApodEntry
@@ -11,7 +10,7 @@ interface ApodThumbnailCardProps {
 
 export const ApodThumbnailCard = ({ entry }: ApodThumbnailCardProps) => (
   <Card>
-    <ApodImagePlaceholder label={entry.title} height={160} />
+    <ImagePlaceholder label={entry.title} height={160} />
     <CardContent>
       <Typography
         variant="caption"
