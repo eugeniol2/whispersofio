@@ -57,6 +57,11 @@
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.2.tgz#2ae5a9d51cc583bd1f5673b3bb70d6d819682473"
   integrity sha512-KHp2IflsnGywDjBWDkR9iEqiWSpc8GIi0lgTT3mOElT0PP1tG26P4tmFI2YvAdzgq9RGyoHZQEIEdZy6Ec5xCA==
 
+"@babel/runtime@^7.29.7":
+  version "7.29.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.7.tgz#12022450c45a4da6d8d8287b18a4ff2ddb23f768"
+  integrity sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==
+
 "@babel/template@^7.27.2":
   version "7.27.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.27.2.tgz#fa78ceed3c4e7b63ebf6cb39e5852fca45f6809d"
@@ -483,6 +488,13 @@
   dependencies:
     "@babel/runtime" "^7.27.6"
 
+"@mui/material-nextjs@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@mui/material-nextjs/-/material-nextjs-9.3.0.tgz#c9bd0267bfece9de2fdcb873058f7f7ebc783f75"
+  integrity sha512-wtI2u7+Sb+xsbn0aPOofYKD2kGD3BreAaLDEFTuf1gQl+IB8kqcTn+UU6OvJ+hAVbFlTXpvD2oVDkOTeCzjVmQ==
+  dependencies:
+    "@babel/runtime" "^7.29.7"
+
 "@mui/material@^6.0.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-6.5.0.tgz#c7eccfe260030433c51b7aec17574bae4504cacc"
@@ -719,6 +731,18 @@
   integrity sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==
   dependencies:
     tslib "^2.8.0"
+
+"@tanstack/query-core@5.101.4":
+  version "5.101.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.101.4.tgz#c01b4289b3094144d8ef96235aa506242cf83efa"
+  integrity sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==
+
+"@tanstack/react-query@^5.101.4":
+  version "5.101.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.101.4.tgz#044137754d79aaa30a82f6e6c42488be79c86ea7"
+  integrity sha512-yRg2pfOCxIs4ZJW3XYYHU/WgtD04FHSnfHlpRT7h7pR77hwkdRG4wxbKe4aq6P0RvXUTBSQpQeadS1SUYUe+KA==
+  dependencies:
+    "@tanstack/query-core" "5.101.4"
 
 "@tybys/wasm-util@^0.10.0":
   version "0.10.0"

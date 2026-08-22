@@ -15,8 +15,8 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 
-import { CustomDrawer } from './components/CustomDrawer'
-import Footer from './components/Footer'
+import { CustomDrawer } from '@/components/CustomDrawer'
+import Footer from '@/components/Footer'
 
 export default function DashboardLayout({
   children

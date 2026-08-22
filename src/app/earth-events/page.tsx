@@ -1,24 +1,5 @@
-'use client'
+import { EarthEvents } from '@/features/EarthEvents'
 
-import { Container, Stack, Typography } from '@mui/material'
-
-export default function EarthEvents() {
-  return (
-    <Container maxWidth="md">
-      <Stack
-        spacing={4}
-        alignItems="center"
-        justifyContent="center"
-        sx={{ minHeight: '100vh' }}
-      >
-        <Typography variant="h4" align="center">
-          Earth Events
-        </Typography>
-
-        <Typography variant="body1" align="center">
-          Get started by editing <code>src/app/earth-events/page.tsx</code>
-        </Typography>
-      </Stack>
-    </Container>
-  )
+export default function EarthEventsPage() {
+  return <EarthEvents />
 }

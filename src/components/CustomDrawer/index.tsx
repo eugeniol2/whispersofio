@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 import Link from 'next/link'
 
-import theme from '@/app/theme/theme'
+import theme from '@/theme/theme'
 
 const navItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },

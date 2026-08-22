@@ -2,7 +2,7 @@
 import { Box, Container, Divider, Grid, Link, Typography } from '@mui/material'
 import React from 'react'
 
-import theme from '@/app/theme/theme'
+import theme from '@/theme/theme'
 
 const Footer = () => {
   return (
