@@ -4,7 +4,8 @@ import type {
   EonetCategory,
   EonetEvent,
   EonetLimit,
-  EonetStatusFilter
+  EonetStatusFilter,
+  EonetTimeRange
 } from './types'
 
 // EONET needs no API key, so — unlike Apod/Dashboard — these calls go
@@ -13,6 +14,12 @@ import type {
 // filter surface means many distinct queries rather than one canonical
 // value worth server-caching; React Query's own per-query client cache
 // is the right fit here.
+
+const TIME_RANGE_DAYS: Record<Exclude<EonetTimeRange, 'all'>, number> = {
+  today: 1,
+  week: 7,
+  month: 30
+}
 
 export async function fetchEonetCategories(): Promise<EonetCategory[]> {
   const response = await fetch(`${EONET_BASE_URL}/categories`)
@@ -31,17 +38,22 @@ interface FetchEonetEventsParams {
   // EONET has ~7,000 open events with no limit param — 'unlimited' fetches
   // and renders all of them, so it's an explicit opt-in, not the default.
   limit: EonetLimit
+  timeRange: EonetTimeRange
 }
 
 export async function fetchEonetEvents({
   status,
   categoryId,
-  limit
+  limit,
+  timeRange
 }: FetchEonetEventsParams): Promise<EonetEvent[]> {
   const url = new URL(`${EONET_BASE_URL}/events`)
   if (limit !== 'unlimited') url.searchParams.set('limit', String(limit))
   if (status !== 'all') url.searchParams.set('status', status)
   if (categoryId) url.searchParams.set('category', categoryId)
+  if (timeRange !== 'all') {
+    url.searchParams.set('days', String(TIME_RANGE_DAYS[timeRange]))
+  }
 
   const response = await fetch(url)
 

@@ -6,7 +6,8 @@ import { Button, Card, MenuItem, Stack, TextField } from '@mui/material'
 import type {
   EonetCategory,
   EonetLimit,
-  EonetStatusFilter
+  EonetStatusFilter,
+  EonetTimeRange
 } from '@/services/api/eonet/types'
 
 interface EarthEventsControlsProps {
@@ -17,6 +18,8 @@ interface EarthEventsControlsProps {
   categoryOptions: EonetCategory[]
   limit: EonetLimit
   onLimitChange: (limit: EonetLimit) => void
+  timeRange: EonetTimeRange
+  onTimeRangeChange: (timeRange: EonetTimeRange) => void
   onSearch: () => void
   loading?: boolean
 }
@@ -29,6 +32,8 @@ export const EarthEventsControls = ({
   categoryOptions,
   limit,
   onLimitChange,
+  timeRange,
+  onTimeRangeChange,
   onSearch,
   loading = false
 }: EarthEventsControlsProps) => (
@@ -87,6 +92,21 @@ export const EarthEventsControls = ({
           <MenuItem value={100}>100</MenuItem>
           <MenuItem value={200}>200</MenuItem>
           <MenuItem value="unlimited">Unlimited</MenuItem>
+        </TextField>
+        <TextField
+          select
+          label="Time Range"
+          size="small"
+          value={timeRange}
+          onChange={event =>
+            onTimeRangeChange(event.target.value as EonetTimeRange)
+          }
+          sx={{ width: { sm: 160 } }}
+        >
+          <MenuItem value="today">Today</MenuItem>
+          <MenuItem value="week">This Week</MenuItem>
+          <MenuItem value="month">1 Month</MenuItem>
+          <MenuItem value="all">All</MenuItem>
         </TextField>
       </Stack>
 

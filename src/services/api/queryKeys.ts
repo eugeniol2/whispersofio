@@ -18,7 +18,11 @@ export const queryKeys = {
   },
   eonet: {
     categories: ['eonet', 'categories'] as const,
-    events: (status: string, categoryId: string, limit: number | string) =>
-      ['eonet', 'events', status, categoryId, limit] as const
+    events: (
+      status: string,
+      categoryId: string,
+      limit: number | string,
+      timeRange: string
+    ) => ['eonet', 'events', status, categoryId, limit, timeRange] as const
   }
 }
