@@ -42,3 +42,5 @@ export interface EonetEvent {
 }
 
 export type EonetStatusFilter = 'open' | 'closed' | 'all'
+
+export type EonetLimit = 30 | 100 | 200 | 'unlimited'

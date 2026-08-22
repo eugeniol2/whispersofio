@@ -5,6 +5,7 @@ import { Button, Card, MenuItem, Stack, TextField } from '@mui/material'
 
 import type {
   EonetCategory,
+  EonetLimit,
   EonetStatusFilter
 } from '@/services/api/eonet/types'
 
@@ -14,6 +15,8 @@ interface EarthEventsControlsProps {
   categoryId: string
   onCategoryChange: (categoryId: string) => void
   categoryOptions: EonetCategory[]
+  limit: EonetLimit
+  onLimitChange: (limit: EonetLimit) => void
   onSearch: () => void
   loading?: boolean
 }
@@ -24,6 +27,8 @@ export const EarthEventsControls = ({
   categoryId,
   onCategoryChange,
   categoryOptions,
+  limit,
+  onLimitChange,
   onSearch,
   loading = false
 }: EarthEventsControlsProps) => (
@@ -63,6 +68,25 @@ export const EarthEventsControls = ({
               {cat.title}
             </MenuItem>
           ))}
+        </TextField>
+        <TextField
+          select
+          label="Rows"
+          size="small"
+          value={limit}
+          onChange={event =>
+            onLimitChange(
+              event.target.value === 'unlimited'
+                ? 'unlimited'
+                : (Number(event.target.value) as EonetLimit)
+            )
+          }
+          sx={{ width: { sm: 140 } }}
+        >
+          <MenuItem value={30}>30</MenuItem>
+          <MenuItem value={100}>100</MenuItem>
+          <MenuItem value={200}>200</MenuItem>
+          <MenuItem value="unlimited">Unlimited</MenuItem>
         </TextField>
       </Stack>
 

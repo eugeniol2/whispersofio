@@ -1,6 +1,11 @@
 import { ApiError } from '../client'
 import { EONET_BASE_URL } from '../endpoints'
-import type { EonetCategory, EonetEvent, EonetStatusFilter } from './types'
+import type {
+  EonetCategory,
+  EonetEvent,
+  EonetLimit,
+  EonetStatusFilter
+} from './types'
 
 // EONET needs no API key, so — unlike Apod/Dashboard — these calls go
 // straight from the browser rather than through one of our own cached
@@ -8,10 +13,6 @@ import type { EonetCategory, EonetEvent, EonetStatusFilter } from './types'
 // filter surface means many distinct queries rather than one canonical
 // value worth server-caching; React Query's own per-query client cache
 // is the right fit here.
-
-// EONET has ~7,000 open events with no limit param — unbounded here would
-// mean fetching and rendering all of them as full cards.
-const EVENTS_LIMIT = 30
 
 export async function fetchEonetCategories(): Promise<EonetCategory[]> {
   const response = await fetch(`${EONET_BASE_URL}/categories`)
@@ -27,14 +28,18 @@ export async function fetchEonetCategories(): Promise<EonetCategory[]> {
 interface FetchEonetEventsParams {
   status: EonetStatusFilter
   categoryId?: string
+  // EONET has ~7,000 open events with no limit param — 'unlimited' fetches
+  // and renders all of them, so it's an explicit opt-in, not the default.
+  limit: EonetLimit
 }
 
 export async function fetchEonetEvents({
   status,
-  categoryId
+  categoryId,
+  limit
 }: FetchEonetEventsParams): Promise<EonetEvent[]> {
   const url = new URL(`${EONET_BASE_URL}/events`)
-  url.searchParams.set('limit', String(EVENTS_LIMIT))
+  if (limit !== 'unlimited') url.searchParams.set('limit', String(limit))
   if (status !== 'all') url.searchParams.set('status', status)
   if (categoryId) url.searchParams.set('category', categoryId)
 

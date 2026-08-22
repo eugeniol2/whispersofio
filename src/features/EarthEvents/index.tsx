@@ -7,23 +7,31 @@ import {
   useEonetCategoriesQuery,
   useEonetEventsQuery
 } from '@/services/api/eonet/queries'
-import type { EonetStatusFilter } from '@/services/api/eonet/types'
+import type {
+  EonetLimit,
+  EonetStatusFilter
+} from '@/services/api/eonet/types'
 
 import { EarthEventCard } from './components/EarthEventCard'
 import { EarthEventsControls } from './components/EarthEventsControls'
 
+const DEFAULT_LIMIT: EonetLimit = 30
+
 export function EarthEvents() {
   const [draftStatus, setDraftStatus] = useState<EonetStatusFilter>('open')
   const [draftCategory, setDraftCategory] = useState('all')
+  const [draftLimit, setDraftLimit] = useState<EonetLimit>(DEFAULT_LIMIT)
   const [status, setStatus] = useState<EonetStatusFilter>('open')
   const [categoryId, setCategoryId] = useState('all')
+  const [limit, setLimit] = useState<EonetLimit>(DEFAULT_LIMIT)
 
   const categoriesQuery = useEonetCategoriesQuery()
-  const eventsQuery = useEonetEventsQuery({ status, categoryId })
+  const eventsQuery = useEonetEventsQuery({ status, categoryId, limit })
 
   const handleSearch = () => {
     setStatus(draftStatus)
     setCategoryId(draftCategory)
+    setLimit(draftLimit)
   }
 
   return (
@@ -54,6 +62,8 @@ export function EarthEvents() {
         categoryId={draftCategory}
         onCategoryChange={setDraftCategory}
         categoryOptions={categoriesQuery.data ?? []}
+        limit={draftLimit}
+        onLimitChange={setDraftLimit}
         onSearch={handleSearch}
         loading={eventsQuery.isFetching}
       />
