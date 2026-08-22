@@ -15,11 +15,36 @@ export const DashboardFeaturedCard = ({
   <Card>
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       <Box sx={{ flex: 1, minHeight: 280 }}>
-        <ImagePlaceholder
-          label={content.imageLabel}
-          height="100%"
-          borderSide="right"
-        />
+        {content.mediaUrl ? (
+          <Box
+            component={content.mediaType === 'video' ? 'video' : 'img'}
+            src={content.mediaUrl}
+            alt={content.mediaType === 'video' ? undefined : content.imageLabel}
+            controls={content.mediaType === 'video' || undefined}
+            preload={content.mediaType === 'video' ? 'metadata' : undefined}
+            sx={{
+              width: '100%',
+              height: '100%',
+              minHeight: 280,
+              objectFit: 'cover',
+              display: 'block',
+              borderBottom: {
+                xs: `1px solid ${theme.palette.border.mainBorder}`,
+                md: 'none'
+              },
+              borderRight: {
+                xs: 'none',
+                md: `1px solid ${theme.palette.border.mainBorder}`
+              }
+            }}
+          />
+        ) : (
+          <ImagePlaceholder
+            label={content.imageLabel}
+            height="100%"
+            borderSide="right"
+          />
+        )}
       </Box>
       <Box sx={{ flex: 1, p: 3 }}>
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>

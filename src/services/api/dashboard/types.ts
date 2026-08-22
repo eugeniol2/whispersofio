@@ -19,6 +19,8 @@ export interface DashboardFeaturedContent {
   title: string
   description: string
   imageLabel: string
+  mediaType?: 'image' | 'video'
+  mediaUrl?: string
   href: string
 }
 

@@ -1,5 +1,17 @@
+// Server-only: this file must never be imported from a 'use client'
+// component, or the API key would be inlined into the browser bundle.
 const NASA_API_BASE_URL = 'https://api.nasa.gov'
-const NASA_API_KEY = process.env.NEXT_PUBLIC_NASA_API_KEY ?? 'DEMO_KEY'
+const NASA_API_KEY = process.env.NASA_API_KEY ?? 'DEMO_KEY'
+
+export class ApiError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
 
 interface ApiClientOptions extends RequestInit {
   params?: Record<string, string | number | undefined>
@@ -19,7 +31,10 @@ export async function apiClient<T>(
   const response = await fetch(url, init)
 
   if (!response.ok) {
-    throw new Error(`NASA API request failed: ${response.status} ${path}`)
+    throw new ApiError(
+      response.status,
+      `NASA API request failed: ${response.status} ${path}`
+    )
   }
 
   return response.json()

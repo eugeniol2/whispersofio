@@ -1,7 +1,6 @@
 import type {
   DashboardActivityItem,
   DashboardApiCollection,
-  DashboardFeaturedContent,
   DashboardStat
 } from './types'
 
@@ -21,16 +20,6 @@ export const mockDashboardStats: DashboardStat[] = [
   },
   { id: 'mars-photos', icon: 'marsRover', value: '1,234', label: 'Mars Photos' }
 ]
-
-export const mockDashboardFeaturedContent: DashboardFeaturedContent = {
-  badge: 'APOD',
-  date: 'January 15, 2025',
-  title: 'The Orion Nebula in Infrared',
-  description:
-    'A stunning infrared view of the Orion Nebula captured by the James Webb Space Telescope, revealing hidden stellar nurseries and cosmic dust formations.',
-  imageLabel: 'Astronomy Picture of the Day',
-  href: '/apod'
-}
 
 export const mockDashboardApiCollections: DashboardApiCollection[] = [
   {
