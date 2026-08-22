@@ -1,8 +1,11 @@
 import LaunchIcon from '@mui/icons-material/Launch'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
 import { Card, Chip, Link as MuiLink, Stack, Typography } from '@mui/material'
 
 import type { EonetEvent, EonetGeometry } from '@/services/api/eonet/types'
+import { useReverseGeocodeQuery } from '@/services/api/geocoding/queries'
 import theme from '@/theme/theme'
+import { formatGeocodeResult } from '@/utils/formatGeocodeResult'
 
 import { eonetCategoryIcons } from '../icons'
 
@@ -31,6 +34,14 @@ export const EarthEventCard = ({ event }: EarthEventCardProps) => {
   const latestGeometry = event.geometry[event.geometry.length - 1]
   const [lon, lat] = getRepresentativeCoordinates(latestGeometry)
   const isOpen = event.closed === null
+
+  // EONET's own description sometimes already has a readable location
+  // (e.g. "9 Miles N from Reed Point, MT") — only reverse-geocode when
+  // it doesn't, since that's the common case and saves a lookup.
+  const geocodeQuery = useReverseGeocodeQuery(lat, lon, !event.description)
+  const locationText =
+    event.description ??
+    (geocodeQuery.data ? formatGeocodeResult(geocodeQuery.data) : null)
 
   return (
     <Card sx={{ p: 3 }}>
@@ -63,6 +74,18 @@ export const EarthEventCard = ({ event }: EarthEventCardProps) => {
               {new Date(latestGeometry.date).toLocaleDateString()} ·{' '}
               {lat.toFixed(1)}, {lon.toFixed(1)}
             </Typography>
+            {locationText && (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}
+              >
+                <LocationOnIcon
+                  sx={{ fontSize: 16, color: theme.palette.secondary.main }}
+                />
+                {locationText}
+              </Typography>
+            )}
           </Stack>
         </Stack>
 
