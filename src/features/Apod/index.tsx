@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
+import { ApodThumbnailCard } from '@/components/ApodThumbnailCard'
 import {
   useApodQuery,
   useApodStatsQuery,
@@ -21,7 +22,6 @@ import {
 import { ApodControls } from './components/ApodControls'
 import { ApodFeaturedCard } from './components/ApodFeaturedCard'
 import { ApodStats } from './components/ApodStats'
-import { ApodThumbnailCard } from './components/ApodThumbnailCard'
 
 const APOD_ARCHIVE_URL = 'https://apod.nasa.gov/apod/archivepix.html'
 

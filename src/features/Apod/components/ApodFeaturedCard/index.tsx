@@ -17,11 +17,10 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
+import { ApodMedia } from '@/components/ApodMedia'
 import type { ApodEntry } from '@/services/api/apod/types'
 import theme from '@/theme/theme'
 import { getApodPageUrl } from '@/utils/getApodPageUrl'
-
-import { ApodMedia } from '../ApodMedia'
 
 interface ApodFeaturedCardProps {
   entry: ApodEntry

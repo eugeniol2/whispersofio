@@ -3,6 +3,7 @@ import type { ApodEntry, ApodMediaType, ApodStat } from './types'
 
 const APOD_ARCHIVE_START = '1995-06-16'
 const RECENT_DAYS = 6
+const STATS_DAYS = 29
 
 interface ApodApiResponse {
   date: string
@@ -61,11 +62,11 @@ export async function fetchRandomApod(): Promise<ApodEntry> {
 
 const toDateString = (date: Date) => date.toISOString().slice(0, 10)
 
-export async function fetchRecentApods(): Promise<ApodEntry[]> {
+async function fetchApodRange(days: number): Promise<ApodEntry[]> {
   const end = new Date()
   end.setDate(end.getDate() - 1)
   const start = new Date(end)
-  start.setDate(start.getDate() - RECENT_DAYS)
+  start.setDate(start.getDate() - days)
 
   const items = await requestApod(
     `?start=${toDateString(start)}&end=${toDateString(end)}`
@@ -74,28 +75,34 @@ export async function fetchRecentApods(): Promise<ApodEntry[]> {
   return items.map(toEntry).reverse()
 }
 
-export async function fetchApodStats(): Promise<ApodStat[]> {
-  const entries = await fetchRecentApods()
+export function fetchRecentApods(): Promise<ApodEntry[]> {
+  return fetchApodRange(RECENT_DAYS)
+}
 
-  const startDate = new Date(APOD_ARCHIVE_START)
-  const daysPublished = Math.floor(
-    (Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+export async function fetchApodStats(): Promise<ApodStat[]> {
+  const entries = await fetchApodRange(STATS_DAYS)
+
+  // APOD skipped a few days in its first week, so this counts days since
+  // launch rather than claiming an exact number of publications.
+  const daysSinceLaunch = Math.floor(
+    (Date.now() - new Date(APOD_ARCHIVE_START).getTime()) /
+      (1000 * 60 * 60 * 24)
   )
-  const years = Math.floor(daysPublished / 365.25)
+  const years = Math.floor(daysSinceLaunch / 365.25)
 
   return [
-    {
-      value: daysPublished.toLocaleString('en-US'),
-      label: 'Days Published'
-    },
     { value: `${years}`, label: 'Years Running' },
     {
+      value: daysSinceLaunch.toLocaleString('en-US'),
+      label: 'Days Since Launch'
+    },
+    {
       value: `${entries.filter(entry => entry.mediaType === 'image').length}`,
-      label: 'Images This Week'
+      label: 'Images This Month'
     },
     {
       value: `${entries.filter(entry => entry.mediaType === 'video').length}`,
-      label: 'Videos This Week'
+      label: 'Videos This Month'
     }
   ]
 }

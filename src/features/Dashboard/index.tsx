@@ -13,6 +13,8 @@ import {
 } from '@mui/material'
 import Link from 'next/link'
 
+import { ApodThumbnailCard } from '@/components/ApodThumbnailCard'
+import { useRecentApodsQuery } from '@/services/api/apod/queries'
 import {
   useDashboardActivityQuery,
   useDashboardApiCollectionsQuery,
@@ -25,11 +27,14 @@ import { DashboardCollectionCard } from './components/DashboardCollectionCard'
 import { DashboardFeaturedCard } from './components/DashboardFeaturedCard'
 import { DashboardStatCard } from './components/DashboardStatCard'
 
+const DASHBOARD_APOD_COUNT = 3
+
 export function Dashboard() {
   const statsQuery = useDashboardStatsQuery()
   const featuredQuery = useDashboardFeaturedContentQuery()
   const collectionsQuery = useDashboardApiCollectionsQuery()
   const activityQuery = useDashboardActivityQuery()
+  const recentApodsQuery = useRecentApodsQuery()
 
   return (
     <Container maxWidth="lg" sx={{ pb: 8 }}>
@@ -145,6 +150,41 @@ export function Dashboard() {
         </Stack>
       ) : (
         <DashboardActivityList items={activityQuery.data} />
+      )}
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ mt: 5, mb: 2 }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          Recent APOD Images
+        </Typography>
+        <MuiLink
+          component={Link}
+          href="/apod"
+          underline="hover"
+          color="secondary"
+        >
+          View All
+        </MuiLink>
+      </Stack>
+
+      {recentApodsQuery.isError ? (
+        <Alert severity="error">Failed to load recent APOD images.</Alert>
+      ) : recentApodsQuery.isPending ? (
+        <Stack alignItems="center" sx={{ py: 6 }}>
+          <CircularProgress color="secondary" />
+        </Stack>
+      ) : (
+        <Grid container spacing={3}>
+          {recentApodsQuery.data.slice(0, DASHBOARD_APOD_COUNT).map(entry => (
+            <Grid key={entry.id} item xs={12} sm={6} md={4}>
+              <ApodThumbnailCard entry={entry} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Container>
   )
