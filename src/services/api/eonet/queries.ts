@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
 import { fetchEonetCategories, fetchEonetEvents } from './requests'
@@ -38,6 +38,10 @@ export function useEonetEventsQuery({
         categoryId: categoryId === 'all' ? undefined : categoryId,
         limit,
         timeRange
-      })
+      }),
+    // Filters apply immediately (no Search button) — keep the current
+    // results on screen while the new combination loads instead of
+    // flashing a blank spinner on every change.
+    placeholderData: keepPreviousData
   })
 }

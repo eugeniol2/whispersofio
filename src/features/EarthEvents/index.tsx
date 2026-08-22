@@ -20,17 +20,11 @@ const DEFAULT_LIMIT: EonetLimit = 30
 const DEFAULT_TIME_RANGE: EonetTimeRange = 'today'
 
 export function EarthEvents() {
-  const [draftStatus, setDraftStatus] = useState<EonetStatusFilter>('open')
-  const [draftCategory, setDraftCategory] = useState('all')
-  const [draftLimit, setDraftLimit] = useState<EonetLimit>(DEFAULT_LIMIT)
-  const [draftTimeRange, setDraftTimeRange] =
-    useState<EonetTimeRange>(DEFAULT_TIME_RANGE)
   const [status, setStatus] = useState<EonetStatusFilter>('open')
   const [categoryId, setCategoryId] = useState('all')
   const [limit, setLimit] = useState<EonetLimit>(DEFAULT_LIMIT)
-  const [timeRange, setTimeRange] = useState<EonetTimeRange>(
-    DEFAULT_TIME_RANGE
-  )
+  const [timeRange, setTimeRange] =
+    useState<EonetTimeRange>(DEFAULT_TIME_RANGE)
 
   const categoriesQuery = useEonetCategoriesQuery()
   const eventsQuery = useEonetEventsQuery({
@@ -39,13 +33,6 @@ export function EarthEvents() {
     limit,
     timeRange
   })
-
-  const handleSearch = () => {
-    setStatus(draftStatus)
-    setCategoryId(draftCategory)
-    setLimit(draftLimit)
-    setTimeRange(draftTimeRange)
-  }
 
   return (
     <Container maxWidth="lg" sx={{ pb: 8 }}>
@@ -70,17 +57,15 @@ export function EarthEvents() {
       </Stack>
 
       <EarthEventsControls
-        status={draftStatus}
-        onStatusChange={setDraftStatus}
-        categoryId={draftCategory}
-        onCategoryChange={setDraftCategory}
+        status={status}
+        onStatusChange={setStatus}
+        categoryId={categoryId}
+        onCategoryChange={setCategoryId}
         categoryOptions={categoriesQuery.data ?? []}
-        limit={draftLimit}
-        onLimitChange={setDraftLimit}
-        timeRange={draftTimeRange}
-        onTimeRangeChange={setDraftTimeRange}
-        onSearch={handleSearch}
-        loading={eventsQuery.isFetching}
+        limit={limit}
+        onLimitChange={setLimit}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
       />
 
       {eventsQuery.isError ? (
