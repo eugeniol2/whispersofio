@@ -1,9 +1,5 @@
 import { ApiError } from '../client'
-import {
-  mockDashboardActivity,
-  mockDashboardApiCollections,
-  mockDashboardStats
-} from './mockData'
+import { mockDashboardActivity, mockDashboardApiCollections } from './mockData'
 import type {
   DashboardActivityItem,
   DashboardApiCollection,
@@ -12,18 +8,57 @@ import type {
 } from './types'
 
 // The dashboard aggregates data from several NASA endpoints (APOD, EONET,
-// Mars rover photos, NeoWs). Each export below already has the async shape
-// a real request would have, so wiring in the real calls later is a
-// drop-in change per section — no changes needed in the feature components.
-// Featured Content is already live (see below); the rest are still mock.
+// Mars rover photos, NeoWs). Featured Content and Stats are already live
+// (see below); API Collections and Activity are still mock.
 
 const MOCK_LATENCY_MS = 400
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+interface DashboardStatsResponse {
+  earthEvents: number | null
+  nearAsteroids: number | null
+  marsPhotos: number | null
+}
+
 export async function fetchDashboardStats(): Promise<DashboardStat[]> {
-  await delay(MOCK_LATENCY_MS)
-  return mockDashboardStats
+  const response = await fetch('/api/dashboard-stats')
+
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch dashboard stats')
+  }
+
+  const data: DashboardStatsResponse = await response.json()
+  const stats: DashboardStat[] = []
+
+  // Each source is fetched independently server-side (see /api/dashboard-stats)
+  // and can fail on its own — only include stats that actually came back.
+  if (data.earthEvents !== null) {
+    stats.push({
+      id: 'earth-events',
+      icon: 'earthEvents',
+      value: data.earthEvents.toLocaleString('en-US'),
+      label: 'Earth Events'
+    })
+  }
+  if (data.nearAsteroids !== null) {
+    stats.push({
+      id: 'near-asteroids',
+      icon: 'asteroids',
+      value: data.nearAsteroids.toLocaleString('en-US'),
+      label: 'Near Asteroids'
+    })
+  }
+  if (data.marsPhotos !== null) {
+    stats.push({
+      id: 'mars-photos',
+      icon: 'marsRover',
+      value: data.marsPhotos.toLocaleString('en-US'),
+      label: 'Mars Photos'
+    })
+  }
+
+  return stats
 }
 
 interface NasaApodApiResponse {

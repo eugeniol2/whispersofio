@@ -1,25 +1,4 @@
-import type {
-  DashboardActivityItem,
-  DashboardApiCollection,
-  DashboardStat
-} from './types'
-
-export const mockDashboardStats: DashboardStat[] = [
-  { id: 'images-today', icon: 'apod', value: '2,847', label: 'Images Today' },
-  {
-    id: 'earth-events',
-    icon: 'earthEvents',
-    value: '156',
-    label: 'Earth Events'
-  },
-  {
-    id: 'near-asteroids',
-    icon: 'asteroids',
-    value: '23',
-    label: 'Near Asteroids'
-  },
-  { id: 'mars-photos', icon: 'marsRover', value: '1,234', label: 'Mars Photos' }
-]
+import type { DashboardActivityItem, DashboardApiCollection } from './types'
 
 export const mockDashboardApiCollections: DashboardApiCollection[] = [
   {
