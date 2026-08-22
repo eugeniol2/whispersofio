@@ -38,4 +38,5 @@ export interface DashboardActivityItem {
   icon: DashboardIconKey
   title: string
   timestamp: string
+  url: string
 }
