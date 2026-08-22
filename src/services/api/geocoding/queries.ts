@@ -18,7 +18,8 @@ export function useReverseGeocodeQuery(
 
   return useQuery({
     queryKey: queryKeys.geocoding.reverse(roundedLat, roundedLon),
-    queryFn: () => fetchReverseGeocode(roundedLat, roundedLon),
+    queryFn: ({ signal }) =>
+      fetchReverseGeocode(roundedLat, roundedLon, signal),
     staleTime: Infinity, // a coordinate's city/state never changes
     enabled
   })

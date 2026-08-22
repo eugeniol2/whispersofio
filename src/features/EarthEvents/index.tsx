@@ -1,13 +1,15 @@
 'use client'
 
 import { Alert, CircularProgress, Container, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   useEonetCategoriesQuery,
+  useEonetCategoryAvailabilityQuery,
   useEonetEventsQuery
 } from '@/services/api/eonet/queries'
 import type {
+  EonetCategoryId,
   EonetLimit,
   EonetStatusFilter,
   EonetTimeRange
@@ -33,6 +35,32 @@ export function EarthEvents() {
     limit,
     timeRange
   })
+
+  const allCategoryIds = categoriesQuery.data?.map(cat => cat.id) ?? []
+  const availabilityQuery = useEonetCategoryAvailabilityQuery({
+    status,
+    timeRange,
+    categoryIds: allCategoryIds
+  })
+
+  const categoryOptions = availabilityQuery.data
+    ? (categoriesQuery.data ?? []).filter(cat =>
+        availabilityQuery.data.includes(cat.id)
+      )
+    : (categoriesQuery.data ?? [])
+
+  // If the selected category has no events under the new status/time
+  // range, it disappears from the options above — fall back to "all"
+  // rather than leaving a hidden, stale selection in place.
+  useEffect(() => {
+    if (
+      categoryId !== 'all' &&
+      availabilityQuery.data &&
+      !availabilityQuery.data.includes(categoryId as EonetCategoryId)
+    ) {
+      setCategoryId('all')
+    }
+  }, [categoryId, availabilityQuery.data])
 
   return (
     <Container maxWidth="lg" sx={{ pb: 8 }}>
@@ -61,7 +89,7 @@ export function EarthEvents() {
         onStatusChange={setStatus}
         categoryId={categoryId}
         onCategoryChange={setCategoryId}
-        categoryOptions={categoriesQuery.data ?? []}
+        categoryOptions={categoryOptions}
         limit={limit}
         onLimitChange={setLimit}
         timeRange={timeRange}

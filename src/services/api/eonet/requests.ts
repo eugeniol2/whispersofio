@@ -2,6 +2,7 @@ import { ApiError } from '../client'
 import { EONET_BASE_URL } from '../endpoints'
 import type {
   EonetCategory,
+  EonetCategoryId,
   EonetEvent,
   EonetLimit,
   EonetStatusFilter,
@@ -21,8 +22,10 @@ const TIME_RANGE_DAYS: Record<Exclude<EonetTimeRange, 'all'>, number> = {
   month: 30
 }
 
-export async function fetchEonetCategories(): Promise<EonetCategory[]> {
-  const response = await fetch(`${EONET_BASE_URL}/categories`)
+export async function fetchEonetCategories(
+  signal?: AbortSignal
+): Promise<EonetCategory[]> {
+  const response = await fetch(`${EONET_BASE_URL}/categories`, { signal })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to fetch EONET categories')
@@ -37,15 +40,19 @@ interface FetchEonetEventsParams {
   categoryId?: string
   // EONET has ~7,000 open events with no limit param — 'unlimited' fetches
   // and renders all of them, so it's an explicit opt-in, not the default.
-  limit: EonetLimit
+  // Widened beyond EonetLimit's UI options so category-availability probes
+  // below can pass limit: 1.
+  limit: EonetLimit | number
   timeRange: EonetTimeRange
+  signal?: AbortSignal
 }
 
 export async function fetchEonetEvents({
   status,
   categoryId,
   limit,
-  timeRange
+  timeRange,
+  signal
 }: FetchEonetEventsParams): Promise<EonetEvent[]> {
   const url = new URL(`${EONET_BASE_URL}/events`)
   if (limit !== 'unlimited') url.searchParams.set('limit', String(limit))
@@ -55,7 +62,7 @@ export async function fetchEonetEvents({
     url.searchParams.set('days', String(TIME_RANGE_DAYS[timeRange]))
   }
 
-  const response = await fetch(url)
+  const response = await fetch(url, { signal })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to fetch EONET events')
@@ -63,4 +70,36 @@ export async function fetchEonetEvents({
 
   const data: { events: EonetEvent[] } = await response.json()
   return data.events
+}
+
+interface FetchAvailableCategoryIdsParams {
+  status: EonetStatusFilter
+  timeRange: EonetTimeRange
+  categoryIds: EonetCategoryId[]
+  signal?: AbortSignal
+}
+
+// EONET has no "counts per category" endpoint, so this probes each
+// category with a cheap limit:1 request in parallel and keeps only the
+// ones that actually return a result under the current status/time range.
+export async function fetchAvailableCategoryIds({
+  status,
+  timeRange,
+  categoryIds,
+  signal
+}: FetchAvailableCategoryIdsParams): Promise<EonetCategoryId[]> {
+  const results = await Promise.all(
+    categoryIds.map(async categoryId => {
+      const events = await fetchEonetEvents({
+        status,
+        categoryId,
+        limit: 1,
+        timeRange,
+        signal
+      })
+      return events.length > 0 ? categoryId : null
+    })
+  )
+
+  return results.filter((id): id is EonetCategoryId => id !== null)
 }

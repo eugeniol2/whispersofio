@@ -14,14 +14,15 @@ interface BigDataCloudResponse {
 
 export async function fetchReverseGeocode(
   lat: number,
-  lon: number
+  lon: number,
+  signal?: AbortSignal
 ): Promise<ReverseGeocodeResult> {
   const url = new URL(`${BIGDATACLOUD_BASE_URL}/reverse-geocode-client`)
   url.searchParams.set('latitude', String(lat))
   url.searchParams.set('longitude', String(lon))
   url.searchParams.set('localityLanguage', 'en')
 
-  const response = await fetch(url)
+  const response = await fetch(url, { signal })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to reverse geocode')

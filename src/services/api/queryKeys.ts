@@ -23,7 +23,9 @@ export const queryKeys = {
       categoryId: string,
       limit: number | string,
       timeRange: string
-    ) => ['eonet', 'events', status, categoryId, limit, timeRange] as const
+    ) => ['eonet', 'events', status, categoryId, limit, timeRange] as const,
+    categoryAvailability: (status: string, timeRange: string) =>
+      ['eonet', 'categoryAvailability', status, timeRange] as const
   },
   geocoding: {
     reverse: (lat: number, lon: number) =>
