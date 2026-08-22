@@ -127,7 +127,12 @@ export function Dashboard() {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Recent Activity
         </Typography>
-        <MuiLink href="#" underline="hover" color="secondary">
+        <MuiLink
+          component={Link}
+          href="/earth-events"
+          underline="hover"
+          color="secondary"
+        >
           View All
         </MuiLink>
       </Stack>
