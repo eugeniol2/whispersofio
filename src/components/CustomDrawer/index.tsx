@@ -1,3 +1,5 @@
+'use client'
+
 import CameraIcon from '@mui/icons-material/Camera'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import ImageIcon from '@mui/icons-material/Image'
@@ -18,6 +20,7 @@ import {
   Toolbar
 } from '@mui/material'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import theme from '@/theme/theme'
 
@@ -40,84 +43,89 @@ export const CustomDrawer = ({
   drawerToggleFunction,
   isOpen,
   drawerWidth
-}: CustomDrawerProps) => (
-  <Drawer
-    variant="temporary"
-    transitionDuration={500}
-    sx={{
-      '& .MuiDrawer-paper': {
-        width: drawerWidth,
-        background: 'linear-gradient(to bottom, #0A0A2A, #121240)',
-        borderRight: `1px solid ${theme.palette.border.mainBorder}`
-      }
-    }}
-    open={isOpen}
-    onClose={drawerToggleFunction}
-    ModalProps={{
-      keepMounted: true
-    }}
-  >
-    <Box flex={1} mt={1.5} mr={2} display="flex" flexDirection="column">
-      <Box alignSelf="flex-end">
-        <IconButton
-          color="secondary"
-          aria-label="open drawer"
-          edge="start"
-          onClick={drawerToggleFunction}
-        >
-          <KeyboardDoubleArrowLeftIcon fontSize="large" />
-        </IconButton>
-      </Box>
-      <Box
-        sx={{
-          height: '100%',
-          background: theme.palette.background.backgroundGradient,
-          color: theme.palette.common.white,
-          paddingTop: '64px'
-        }}
-      >
-        <Toolbar />
-        <List>
-          {navItems.map(item => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={item.path}
-                onClick={drawerToggleFunction}
-                sx={{
-                  py: 2
-                }}
-              >
-                <ListItemIcon sx={{ color: theme.palette.secondary.main }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+}: CustomDrawerProps) => {
+  const pathname = usePathname()
+
+  return (
+    <Drawer
+      variant="temporary"
+      transitionDuration={500}
+      sx={{
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          background: 'linear-gradient(to bottom, #0A0A2A, #121240)',
+          borderRight: `1px solid ${theme.palette.border.mainBorder}`
+        }
+      }}
+      open={isOpen}
+      onClose={drawerToggleFunction}
+      ModalProps={{
+        keepMounted: true
+      }}
+    >
+      <Box flex={1} mt={1.5} mr={2} display="flex" flexDirection="column">
+        <Box alignSelf="flex-end">
+          <IconButton
+            color="secondary"
+            aria-label="open drawer"
+            edge="start"
+            onClick={drawerToggleFunction}
+          >
+            <KeyboardDoubleArrowLeftIcon fontSize="large" />
+          </IconButton>
+        </Box>
         <Box
           sx={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            textAlign: 'center',
-            py: 2,
-            background: theme.palette.background.customBackground
+            height: '100%',
+            background: theme.palette.background.backgroundGradient,
+            color: theme.palette.common.white,
+            paddingTop: '64px'
           }}
         >
-          <Button
-            variant="contained"
+          <Toolbar />
+          <List>
+            {navItems.map(item => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href={item.path}
+                  onClick={drawerToggleFunction}
+                  selected={pathname === item.path}
+                  sx={{
+                    py: 2
+                  }}
+                >
+                  <ListItemIcon sx={{ color: theme.palette.secondary.main }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Box
             sx={{
-              borderRadius: '50px',
-              fontWeight: 600,
-              px: 4
+              position: 'absolute',
+              bottom: 0,
+              width: '100%',
+              textAlign: 'center',
+              py: 2,
+              background: theme.palette.background.customBackground
             }}
           >
-            Upgrade
-          </Button>
+            <Button
+              variant="contained"
+              sx={{
+                borderRadius: '50px',
+                fontWeight: 600,
+                px: 4
+              }}
+            >
+              Upgrade
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
-  </Drawer>
-)
+    </Drawer>
+  )
+}

@@ -145,6 +145,18 @@ const theme = createTheme({
             background: 'linear-gradient(135deg, #2A6FAE, #5A2E7A)',
             transform: 'scale(1.03)',
             transition: 'transform 0.3s ease'
+          },
+          '&.Mui-selected': {
+            background:
+              'linear-gradient(135deg, rgba(0, 194, 194, 0.25), rgba(74, 30, 106, 0.25))',
+            borderLeft: '3px solid #00C2C2',
+            '&:hover': {
+              background:
+                'linear-gradient(135deg, rgba(0, 194, 194, 0.35), rgba(74, 30, 106, 0.35))'
+            },
+            '& .MuiListItemText-primary': {
+              fontWeight: 700
+            }
           }
         }
       }
