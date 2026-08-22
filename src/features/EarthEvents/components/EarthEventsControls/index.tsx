@@ -33,7 +33,7 @@ export const EarthEventsControls = ({
   onTimeRangeChange
 }: EarthEventsControlsProps) => (
   <Card sx={{ p: 3, mb: 4 }}>
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={4}>
       <TextField
         select
         label="Status"
@@ -42,7 +42,7 @@ export const EarthEventsControls = ({
         onChange={event =>
           onStatusChange(event.target.value as EonetStatusFilter)
         }
-        sx={{ width: { sm: 160 } }}
+        sx={{ flex: 1 }}
       >
         <MenuItem value="open">Open</MenuItem>
         <MenuItem value="closed">Closed</MenuItem>
@@ -54,7 +54,7 @@ export const EarthEventsControls = ({
         size="small"
         value={categoryId}
         onChange={event => onCategoryChange(event.target.value)}
-        sx={{ width: { sm: 220 } }}
+        sx={{ flex: 1 }}
       >
         <MenuItem value="all">All Categories</MenuItem>
         {categoryOptions.map(cat => (
@@ -75,7 +75,7 @@ export const EarthEventsControls = ({
               : (Number(event.target.value) as EonetLimit)
           )
         }
-        sx={{ width: { sm: 140 } }}
+        sx={{ flex: 1 }}
       >
         <MenuItem value={30}>30</MenuItem>
         <MenuItem value={100}>100</MenuItem>
@@ -90,7 +90,7 @@ export const EarthEventsControls = ({
         onChange={event =>
           onTimeRangeChange(event.target.value as EonetTimeRange)
         }
-        sx={{ width: { sm: 160 } }}
+        sx={{ flex: 1 }}
       >
         <MenuItem value="today">Today</MenuItem>
         <MenuItem value="week">This Week</MenuItem>
