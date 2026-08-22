@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+import { EONET_BASE_URL } from '@/services/api/endpoints'
 import { createServerCache } from '@/services/api/serverCache'
 
 // NASA has no "activity feed" endpoint — this surfaces the most recently
@@ -39,7 +40,7 @@ export async function GET() {
 
   try {
     const response = await fetch(
-      'https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=20'
+      `${EONET_BASE_URL}/events?status=open&limit=20`
     )
 
     if (!response.ok) {

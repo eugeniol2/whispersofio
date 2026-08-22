@@ -1,26 +1,27 @@
-import { eonetCategories, mockEonetEvents } from './mockData'
+import { ApiError } from '../client'
+import { EONET_BASE_URL } from '../endpoints'
 import type { EonetCategory, EonetEvent, EonetStatusFilter } from './types'
 
-// Stand-in for NASA's real EONET API
-// (https://eonet.gsfc.nasa.gov/api/v3/events?status=X&category=Y and
-// .../categories). Both exports already have the async shape a real
-// request would have, so swapping the body for a real fetch is a
-// drop-in change:
-//
-//   export async function fetchEonetEvents(params: FetchEonetEventsParams) {
-//     const { events } = await apiClient('/eonet/v3/events', {
-//       params: { status: params.status, category: params.categoryId }
-//     })
-//     return events
-//   }
+// EONET needs no API key, so — unlike Apod/Dashboard — these calls go
+// straight from the browser rather than through one of our own cached
+// Route Handlers. There's no secret to protect, and the status/category
+// filter surface means many distinct queries rather than one canonical
+// value worth server-caching; React Query's own per-query client cache
+// is the right fit here.
 
-const MOCK_LATENCY_MS = 400
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+// EONET has ~7,000 open events with no limit param — unbounded here would
+// mean fetching and rendering all of them as full cards.
+const EVENTS_LIMIT = 30
 
 export async function fetchEonetCategories(): Promise<EonetCategory[]> {
-  await delay(MOCK_LATENCY_MS)
-  return eonetCategories
+  const response = await fetch(`${EONET_BASE_URL}/categories`)
+
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch EONET categories')
+  }
+
+  const data: { categories: EonetCategory[] } = await response.json()
+  return data.categories
 }
 
 interface FetchEonetEventsParams {
@@ -32,18 +33,17 @@ export async function fetchEonetEvents({
   status,
   categoryId
 }: FetchEonetEventsParams): Promise<EonetEvent[]> {
-  await delay(MOCK_LATENCY_MS)
+  const url = new URL(`${EONET_BASE_URL}/events`)
+  url.searchParams.set('limit', String(EVENTS_LIMIT))
+  if (status !== 'all') url.searchParams.set('status', status)
+  if (categoryId) url.searchParams.set('category', categoryId)
 
-  return mockEonetEvents.filter(event => {
-    const matchesStatus =
-      status === 'all'
-        ? true
-        : status === 'open'
-          ? event.closed === null
-          : event.closed !== null
-    const matchesCategory =
-      !categoryId || event.categories.some(c => c.id === categoryId)
+  const response = await fetch(url)
 
-    return matchesStatus && matchesCategory
-  })
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch EONET events')
+  }
+
+  const data: { events: EonetEvent[] } = await response.json()
+  return data.events
 }

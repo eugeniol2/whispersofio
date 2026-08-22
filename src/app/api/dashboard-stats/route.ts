@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { apiClient, ApiError } from '@/services/api/client'
+import { EONET_BASE_URL } from '@/services/api/endpoints'
 import { createServerCache } from '@/services/api/serverCache'
 
 // Event/asteroid counts change more often than APOD, so a shorter window
@@ -21,9 +22,7 @@ interface EonetEventsResponse {
 
 async function fetchEarthEventsCount(): Promise<number> {
   // EONET lives on its own domain (not api.nasa.gov) and needs no API key.
-  const response = await fetch(
-    'https://eonet.gsfc.nasa.gov/api/v3/events?status=open'
-  )
+  const response = await fetch(`${EONET_BASE_URL}/events?status=open`)
 
   if (!response.ok) {
     throw new ApiError(response.status, `EONET request failed: ${response.status}`)

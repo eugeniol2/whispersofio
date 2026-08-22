@@ -1,7 +1,7 @@
 import LaunchIcon from '@mui/icons-material/Launch'
 import { Card, Chip, Link as MuiLink, Stack, Typography } from '@mui/material'
 
-import type { EonetEvent } from '@/services/api/eonet/types'
+import type { EonetEvent, EonetGeometry } from '@/services/api/eonet/types'
 import theme from '@/theme/theme'
 
 import { eonetCategoryIcons } from '../icons'
@@ -10,11 +10,26 @@ interface EarthEventCardProps {
   event: EonetEvent
 }
 
+// Point coordinates are a flat [lon, lat] pair. Polygon coordinates are
+// GeoJSON-style rings of [lon, lat] pairs — use the first vertex as a
+// representative point for display.
+const getRepresentativeCoordinates = (
+  geometry: EonetGeometry
+): [number, number] => {
+  if (geometry.type === 'Point') {
+    const [lon, lat] = geometry.coordinates as number[]
+    return [lon, lat]
+  }
+
+  const [lon, lat] = (geometry.coordinates as number[][][])[0][0]
+  return [lon, lat]
+}
+
 export const EarthEventCard = ({ event }: EarthEventCardProps) => {
   const category = event.categories[0]
   const Icon = eonetCategoryIcons[category.id]
   const latestGeometry = event.geometry[event.geometry.length - 1]
-  const [lon, lat] = latestGeometry.coordinates
+  const [lon, lat] = getRepresentativeCoordinates(latestGeometry)
   const isOpen = event.closed === null
 
   return (
