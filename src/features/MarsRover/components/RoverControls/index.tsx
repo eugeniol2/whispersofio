@@ -11,20 +11,27 @@ import {
   TextField
 } from '@mui/material'
 
-import type { RoverCamera, RoverName } from '@/services/api/marsRover/types'
+import { cameraViewLabels } from '@/services/api/marsRover/roverReference'
+import type {
+  CameraView,
+  RoverCamera,
+  RoverName
+} from '@/services/api/marsRover/types'
 
 const ROVERS: { value: RoverName; label: string }[] = [
   { value: 'curiosity', label: 'Curiosity' },
-  { value: 'opportunity', label: 'Opportunity' },
-  { value: 'spirit', label: 'Spirit' },
   { value: 'perseverance', label: 'Perseverance' }
 ]
 
 interface RoverControlsProps {
   rover: RoverName
   onRoverChange: (rover: RoverName) => void
-  sol: number
-  onSolChange: (sol: number) => void
+  sol: string
+  onSolChange: (sol: string) => void
+  maxSol?: number
+  view: string
+  onViewChange: (view: string) => void
+  viewOptions: CameraView[]
   camera: string
   onCameraChange: (camera: string) => void
   cameraOptions: RoverCamera[]
@@ -37,6 +44,10 @@ export const RoverControls = ({
   onRoverChange,
   sol,
   onSolChange,
+  maxSol,
+  view,
+  onViewChange,
+  viewOptions,
   camera,
   onCameraChange,
   cameraOptions,
@@ -71,16 +82,35 @@ export const RoverControls = ({
           type="number"
           size="small"
           value={sol}
-          onChange={event => onSolChange(Number(event.target.value))}
-          sx={{ width: { sm: 120 } }}
+          onChange={event => onSolChange(event.target.value)}
+          helperText={maxSol ? `Latest: ${maxSol.toLocaleString('en-US')}` : ' '}
+          slotProps={{ htmlInput: { min: 0, max: maxSol } }}
+          sx={{ width: { sm: 140 } }}
         />
+        <TextField
+          select
+          label="View"
+          size="small"
+          value={view}
+          onChange={event => onViewChange(event.target.value)}
+          helperText=" "
+          sx={{ width: { sm: 150 } }}
+        >
+          <MenuItem value="all">All Views</MenuItem>
+          {viewOptions.map(option => (
+            <MenuItem key={option} value={option}>
+              {cameraViewLabels[option]}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           select
           label="Camera"
           size="small"
           value={camera}
           onChange={event => onCameraChange(event.target.value)}
-          sx={{ width: { sm: 220 } }}
+          helperText=" "
+          sx={{ width: { sm: 250 } }}
         >
           <MenuItem value="all">All Cameras</MenuItem>
           {cameraOptions.map(cam => (

@@ -1,44 +1,79 @@
 'use client'
 
-import { Alert, CircularProgress, Container, Grid, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import {
+  Alert,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  Typography
+} from '@mui/material'
+import { useMemo, useState } from 'react'
 
-import { roverCameras } from '@/services/api/marsRover/mockData'
 import {
   useRoverInfoQuery,
   useRoverPhotosQuery
 } from '@/services/api/marsRover/queries'
-import type { RoverName } from '@/services/api/marsRover/types'
+import {
+  getCameraView,
+  roverCameras
+} from '@/services/api/marsRover/roverReference'
+import type { CameraView, RoverName } from '@/services/api/marsRover/types'
 
 import { MarsPhotoCard } from './components/MarsPhotoCard'
 import { RoverControls } from './components/RoverControls'
 import { RoverInfoCard } from './components/RoverInfoCard'
 
-const DEFAULT_SOL = 1000
-
 export function MarsRover() {
   const [rover, setRover] = useState<RoverName>('curiosity')
-  const [draftSol, setDraftSol] = useState(DEFAULT_SOL)
-  const [draftCamera, setDraftCamera] = useState('all')
-  const [committedSol, setCommittedSol] = useState(DEFAULT_SOL)
-  const [committedCamera, setCommittedCamera] = useState('all')
+  const [draftSol, setDraftSol] = useState('')
+  const [committedSol, setCommittedSol] = useState<number | null>(null)
+  const [camera, setCamera] = useState('all')
+  const [view, setView] = useState('all')
 
   const infoQuery = useRoverInfoQuery(rover)
+  const latestSol = infoQuery.data?.latestSol ?? null
+  const activeSol = committedSol ?? latestSol
+
+  const viewOptions = useMemo(() => {
+    const present = new Set(
+      roverCameras[rover].map(cam => getCameraView(cam.name))
+    )
+    const order: CameraView[] = ['left', 'right', 'sky', 'other']
+    return order.filter(option => present.has(option))
+  }, [rover])
+
+  const cameraOptions = useMemo(
+    () =>
+      view === 'all'
+        ? roverCameras[rover]
+        : roverCameras[rover].filter(cam => getCameraView(cam.name) === view),
+    [rover, view]
+  )
+
   const photosQuery = useRoverPhotosQuery({
     rover,
-    sol: committedSol,
-    camera: committedCamera
+    sol: activeSol,
+    camera,
+    view
   })
 
   const handleRoverChange = (nextRover: RoverName) => {
     setRover(nextRover)
-    setDraftCamera('all')
-    setCommittedCamera('all')
+    setDraftSol('')
+    setCommittedSol(null)
+    setCamera('all')
+    setView('all')
+  }
+
+  const handleViewChange = (nextView: string) => {
+    setView(nextView)
+    setCamera('all')
   }
 
   const handleSearch = () => {
-    setCommittedSol(draftSol)
-    setCommittedCamera(draftCamera)
+    const parsed = Number(draftSol)
+    setCommittedSol(draftSol !== '' && parsed >= 0 ? parsed : null)
   }
 
   return (
@@ -57,19 +92,23 @@ export function MarsRover() {
           color="text.secondary"
           sx={{ maxWidth: 640 }}
         >
-          Browse raw imagery from NASA&apos;s Mars rovers, filtered by
-          mission sol and camera.
+          Browse raw imagery straight from NASA&apos;s active Mars rovers,
+          filtered by mission sol and camera.
         </Typography>
       </Stack>
 
       <RoverControls
         rover={rover}
         onRoverChange={handleRoverChange}
-        sol={draftSol}
+        sol={draftSol !== '' ? draftSol : (latestSol?.toString() ?? '')}
         onSolChange={setDraftSol}
-        camera={draftCamera}
-        onCameraChange={setDraftCamera}
-        cameraOptions={roverCameras[rover]}
+        maxSol={latestSol ?? undefined}
+        view={view}
+        onViewChange={handleViewChange}
+        viewOptions={viewOptions}
+        camera={camera}
+        onCameraChange={setCamera}
+        cameraOptions={cameraOptions}
         onSearch={handleSearch}
         loading={photosQuery.isFetching}
       />
@@ -94,7 +133,7 @@ export function MarsRover() {
         </Stack>
       ) : photosQuery.data.length === 0 ? (
         <Alert severity="info">
-          No photos found for this sol/camera combination.
+          No photos found for this sol and camera combination.
         </Alert>
       ) : (
         <Grid container spacing={3}>

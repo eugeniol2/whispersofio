@@ -1,4 +1,6 @@
-export type RoverName = 'curiosity' | 'opportunity' | 'spirit' | 'perseverance'
+export type RoverName = 'curiosity' | 'perseverance'
+
+export type CameraView = 'left' | 'right' | 'sky' | 'other'
 
 export interface RoverCamera {
   name: string
@@ -10,16 +12,17 @@ export interface RoverInfo {
   status: 'active' | 'complete'
   launchDate: string
   landingDate: string
-  maxSol: number
-  maxDate: string
-  totalPhotos: number
+  latestSol: number
+  latestDate: string
+  totalImages: number
   cameras: RoverCamera[]
 }
 
 export interface MarsPhoto {
-  id: number
+  id: string
   sol: number
   earthDate: string
   camera: RoverCamera
-  imageLabel: string
+  imageUrl: string
+  fullImageUrl: string
 }

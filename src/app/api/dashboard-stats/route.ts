@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 
 import { apiClient, ApiError } from '@/services/api/client'
-import { EONET_BASE_URL } from '@/services/api/endpoints'
+import {
+  EONET_BASE_URL,
+  MARS_RAW_IMAGES_BASE_URL
+} from '@/services/api/endpoints'
 import { createServerCache } from '@/services/api/serverCache'
 
 const REVALIDATE_MS = 60 * 60 * 1000
@@ -41,15 +44,28 @@ async function fetchNearAsteroidsCount(): Promise<number> {
   return data.element_count
 }
 
-interface MarsManifestResponse {
-  photo_manifest: { total_photos: number }
+interface MarsRawImagesResponse {
+  total_images: number
 }
 
 async function fetchMarsPhotosTotal(): Promise<number> {
-  const data = await apiClient<MarsManifestResponse>(
-    '/mars-photos/api/v1/manifests/curiosity'
-  )
-  return data.photo_manifest.total_photos
+  const url = new URL(MARS_RAW_IMAGES_BASE_URL)
+  url.searchParams.set('feed', 'raw_images')
+  url.searchParams.set('feedtype', 'json')
+  url.searchParams.set('category', 'mars2020')
+  url.searchParams.set('num', '1')
+
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new ApiError(
+      response.status,
+      `Mars raw images request failed: ${response.status}`
+    )
+  }
+
+  const data: MarsRawImagesResponse = await response.json()
+  return data.total_images
 }
 
 export async function GET() {

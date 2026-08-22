@@ -13,8 +13,8 @@ export const queryKeys = {
   },
   marsRover: {
     info: (rover: string) => ['marsRover', 'info', rover] as const,
-    photos: (rover: string, sol: number, camera: string) =>
-      ['marsRover', 'photos', rover, sol, camera] as const
+    photos: (rover: string, sol: number, camera: string, view: string) =>
+      ['marsRover', 'photos', rover, sol, camera, view] as const
   },
   eonet: {
     categories: ['eonet', 'categories'] as const,

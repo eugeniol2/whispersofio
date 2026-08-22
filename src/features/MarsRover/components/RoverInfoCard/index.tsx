@@ -11,19 +11,20 @@ export const RoverInfoCard = ({ info }: RoverInfoCardProps) => {
   const fields: { label: string; value: string }[] = [
     { label: 'Launch Date', value: info.launchDate },
     { label: 'Landing Date', value: info.landingDate },
-    { label: 'Max Sol', value: info.maxSol.toLocaleString() },
-    { label: 'Max Date', value: info.maxDate },
-    { label: 'Total Photos', value: info.totalPhotos.toLocaleString() }
+    { label: 'Latest Sol', value: info.latestSol.toLocaleString('en-US') },
+    {
+      label: 'Latest Imagery',
+      value: new Date(info.latestDate).toLocaleDateString('en-US')
+    },
+    {
+      label: 'Images That Sol',
+      value: info.totalImages.toLocaleString('en-US')
+    }
   ]
 
   return (
     <Card sx={{ p: 3, mb: 4 }}>
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={1.5}
-        sx={{ mb: 3 }}
-      >
+      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
         <Typography variant="h6">{info.name}</Typography>
         <Chip
           label={info.status === 'active' ? 'Active' : 'Mission Complete'}
