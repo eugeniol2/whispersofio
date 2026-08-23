@@ -16,7 +16,8 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 - [Scripts Disponíveis](#scripts-disponíveis)
 - [Arquitetura](#arquitetura)
 - [Notas de Engenharia](#notas-de-engenharia)
-- [Próximos Passos](#próximos-passos)
+- [Interface](#interface)
+- [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
 
@@ -25,6 +26,8 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 O NASA Explorer exibe dados ao vivo de várias APIs abertas da NASA por trás de uma interface escura e consistente. Todas as telas estão ligadas a uma fonte de dados real — não há dado de exemplo por trás dos visuais.
 
 O projeto também serve como demonstração de prática full-stack: arquitetura baseada em features, uma camada de dados tipada construída sobre React Query, proteção da chave de API e cache de respostas no servidor via Route Handlers do Next.js, e o hábito de verificar o comportamento de APIs de terceiros contra os serviços reais antes de construir em cima delas.
+
+Todas as telas são renderizadas no servidor com os dados já embutidos e revalidação incremental, então chegam ao navegador prontas — sem spinner e sem nenhuma requisição após a hidratação.
 
 ---
 
@@ -92,8 +95,9 @@ Apenas os endpoints de `api.nasa.gov` exigem chave, e essas chamadas são feitas
 | Framework | Next.js 15 (App Router, Turbopack) |
 | Linguagem | TypeScript |
 | Interface | React 19, Material UI v6, Emotion |
-| Dados | TanStack React Query v5 |
-| Fontes | Geist via `next/font` |
+| Dados | TanStack React Query v5, com prefetch no servidor e hidratação |
+| Renderização | Server Components + ISR, com streaming de carregamento |
+| Fonte | Nunito via `next/font` |
 | Ferramentas | Yarn, ESLint, Prettier |
 
 ---
@@ -150,24 +154,32 @@ Roteamento, telas e acesso a dados ficam separados:
 
 ```
 src/
-├── app/                    apenas roteamento — páginas enxutas e route handlers de API
-│   └── api/                proxies no servidor que guardam a chave e fazem cache das respostas
+├── app/                    roteamento — cada página faz prefetch e hidrata sua tela
+│   ├── <rota>/page.tsx     Server Component: semeia as queries e entrega hidratadas
+│   ├── <rota>/loading.tsx  esqueleto transmitido enquanto o servidor trabalha
+│   └── api/                route handlers que guardam a chave e fazem cache
 ├── features/               uma pasta por tela
 │   └── EarthEvents/
 │       ├── index.tsx
 │       ├── EventDetail/
 │       └── components/
-├── services/api/           uma pasta por integração (types · requests · queries)
-│   ├── client.ts           cliente compartilhado da NASA, somente servidor
+├── services/api/           uma pasta por integração
+│   ├── <nome>/requests.ts  funções tipadas usadas pelo navegador
+│   ├── <nome>/queries.ts   hooks do React Query
+│   ├── <nome>/server.ts    busca no servidor, compartilhada com o route handler
+│   ├── client.ts           cliente da NASA, somente servidor
 │   ├── endpoints.ts        URLs base externas, centralizadas
+│   ├── prefetch.ts         monta o estado desidratado das páginas
 │   ├── queryKeys.ts        fábrica de chaves do React Query
-│   └── serverCache.ts      cache em memória usado pelos route handlers
+│   └── serverCache.ts      cache em memória usado no servidor
 ├── components/             UI compartilhada
 ├── utils/                  helpers puros compartilhados
 └── theme/                  tema do MUI
 ```
 
 Cada módulo em `services/api/<nome>` expõe funções de request tipadas e hooks do React Query, então toda feature busca dados da mesma forma, independentemente da origem.
+
+Onde existe `server.ts`, a mesma função serve o route handler e o Server Component — a página nunca chama a própria API por HTTP, e ambos compartilham o cache. O resultado é que as telas chegam ao navegador já renderizadas, sem nenhuma requisição depois da hidratação.
 
 ---
 
@@ -183,13 +195,28 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 
 **Mídia precisa ser medida antes de ser exibida.** A APOD serve versões web e em resolução máxima que diferem em cerca de 14×, e seus vídeos `mp4` não têm miniatura, enquanto o servidor envia o arquivo inteiro em vez de responder só com os metadados. Por isso os vídeos têm o tamanho verificado no servidor, e apenas os pequenos viram prévia com um quadro real.
 
+**O gargalo do Mars Rover não era o volume de dados.** A tela demorava a abrir, e a hipótese natural era limitar o número de imagens. A medição mostrou outra coisa: um sol vazio de 0,2 KB leva os mesmos ~7,5s que um de 365 KB. O custo é latência por requisição, não banda — e sondar em paralelo piora, porque o feed serializa (3 requisições simultâneas levaram 71s contra 24s sequenciais). A solução foi reduzir requisições, não dados: o `/info` passou a devolver as fotos que já baixara ao procurar o sol, e as respostas do feed passaram a ser cacheadas em disco. Após reiniciar o servidor, a rota caiu de 8,5s para 0,033s.
+
+**SSR não deixa o dado mais rápido, muda onde se espera.** Com prefetch no servidor as telas chegam prontas, mas se a fonte estiver fria o usuário encara uma tela parada em vez de um spinner. Por isso cada rota tem um `loading.tsx`: o esqueleto é transmitido na hora e o conteúdo entra em seguida. Pelo mesmo motivo, a estatística de eventos do dashboard ficou deliberadamente fora do prefetch — contar todos os eventos abertos do EONET leva cerca de 75s, tempo que não pode entrar na renderização de uma página.
+
 ---
 
-## Próximos Passos
+## Interface
 
-- O grid "NASA API Collections" do dashboard ainda é uma lista de navegação estática, não dados buscados
-- Ainda não há suíte de testes automatizados
-- Ainda não há deploy configurado
+- Navegação no cabeçalho, centralizada, com a página ativa destacada e menu compacto em telas menores
+- Tela de carregamento própria: um planeta girando em CSS e mensagens que se alternam enquanto o servidor busca os dados
+- Atalhos fixos para GitHub e LinkedIn na lateral, ocultos em telas pequenas para não cobrir o conteúdo
+- Tema escuro único, com o design system definido no tema do MUI
+
+---
+
+## Limitações Conhecidas
+
+- O grid "NASA API Collections" do dashboard é uma lista de navegação estática, não dados buscados
+- A estatística de eventos na Terra é a única chamada feita pelo navegador, por causa do custo da consulta no EONET
+- Todo o conteúdo vindo da NASA é em inglês, então a interface segue o mesmo idioma por consistência
+- Não há suíte de testes automatizados
+- Não há deploy configurado
 
 ---
 
