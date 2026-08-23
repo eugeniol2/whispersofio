@@ -2,6 +2,8 @@
 
 Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, rastreamento de eventos naturais em tempo real, imagens dos rovers em Marte, asteroides próximos à Terra e o acervo histórico de mídia da NASA — construído com Next.js, TypeScript e React Query sobre APIs reais da NASA.
 
+**[Acessar a aplicação →](https://whispersofio.vercel.app/)**
+
 > Nome do repositório: `whispersofio`
 
 ![Tela de asteroides próximos do NASA Explorer](docs/screenshots/asteroids.png)
@@ -108,6 +110,8 @@ Apenas os endpoints de `api.nasa.gov` exigem chave, e essas chamadas são feitas
 ---
 
 ## Como Rodar
+
+A aplicação está publicada em **[whispersofio.vercel.app](https://whispersofio.vercel.app/)**. Os passos abaixo são para rodar localmente.
 
 ### Pré-requisitos
 
