@@ -10,6 +10,7 @@ import type { CameraView, MarsPhoto, RoverName } from './types'
 export const PHOTO_LIMIT = 50
 
 const FEED_TIMEOUT_MS = 20000
+const FEED_CACHE_SECONDS = 6 * 60 * 60
 
 export interface RawImagesFeed {
   sol: number
@@ -49,7 +50,8 @@ export async function fetchRawImagesFeed({
   if (camera) url.searchParams.set('search', camera)
 
   const response = await fetch(url, {
-    signal: AbortSignal.timeout(FEED_TIMEOUT_MS)
+    signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
+    next: { revalidate: FEED_CACHE_SECONDS }
   })
 
   if (!response.ok) {

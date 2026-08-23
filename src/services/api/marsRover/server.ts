@@ -6,6 +6,7 @@ import type { RoverInfoPayload, RoverName } from './types'
 const REVALIDATE_MS = 6 * 60 * 60 * 1000
 const MARS_SOL_IN_EARTH_DAYS = 1.0274912
 const SOL_PROBE_WINDOW = 12
+const SOL_PROBE_BUDGET_MS = 25000
 
 const infoCache = createKeyedServerCache<RoverInfoPayload>(REVALIDATE_MS)
 
@@ -30,10 +31,11 @@ export async function getRoverInfo(
   const estimatedSol = getEstimatedSol(facts.landingDate)
 
   let latest = null
+  const deadline = Date.now() + SOL_PROBE_BUDGET_MS
 
   for (let offset = 0; offset < SOL_PROBE_WINDOW; offset += 1) {
     const sol = estimatedSol - offset
-    if (sol < 0) break
+    if (sol < 0 || Date.now() > deadline) break
 
     try {
       const feed = await fetchRawImagesFeed({ rover, sol })
