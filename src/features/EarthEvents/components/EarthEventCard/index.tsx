@@ -3,13 +3,12 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import { Card, CardActionArea, Chip, Stack, Typography } from '@mui/material'
 import Link from 'next/link'
 
+import { getEonetCategoryIcon } from '@/components/eonetCategoryIcons'
 import type { EonetEvent } from '@/services/api/eonet/types'
 import { useReverseGeocodeQuery } from '@/services/api/geocoding/queries'
 import theme from '@/theme/theme'
 import { formatGeocodeResult } from '@/utils/formatGeocodeResult'
 import { getRepresentativeCoordinates } from '@/utils/getRepresentativeCoordinates'
-
-import { eonetCategoryIcons } from '../icons'
 
 interface EarthEventCardProps {
   event: EonetEvent
@@ -17,7 +16,7 @@ interface EarthEventCardProps {
 
 export const EarthEventCard = ({ event }: EarthEventCardProps) => {
   const category = event.categories[0]
-  const Icon = eonetCategoryIcons[category.id]
+  const Icon = getEonetCategoryIcon(category.id)
   const latestGeometry = event.geometry[event.geometry.length - 1]
   const [lon, lat] = getRepresentativeCoordinates(latestGeometry)
   const isOpen = event.closed === null

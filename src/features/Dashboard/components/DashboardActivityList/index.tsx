@@ -1,10 +1,10 @@
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { Box, Divider, Paper, Stack, Typography } from '@mui/material'
 import Link from 'next/link'
 
+import { getEonetCategoryIcon } from '@/components/eonetCategoryIcons'
 import type { DashboardActivityItem } from '@/services/api/dashboard/types'
 import theme from '@/theme/theme'
-
-import { dashboardIcons } from '../icons'
 
 interface DashboardActivityListProps {
   items: DashboardActivityItem[]
@@ -23,7 +23,7 @@ export const DashboardActivityList = ({
     }}
   >
     {items.map((item, index) => {
-      const Icon = dashboardIcons[item.icon]
+      const Icon = getEonetCategoryIcon(item.categoryId)
 
       return (
         <Stack key={item.id}>
@@ -60,12 +60,26 @@ export const DashboardActivityList = ({
               >
                 <Icon fontSize="small" />
               </Stack>
-              <Stack>
-                <Typography variant="body1">{item.title}</Typography>
+              <Stack sx={{ minWidth: 0, flexGrow: 1 }}>
+                <Typography variant="body1" noWrap>
+                  {item.title}
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {item.timestamp}
+                  <Box
+                    component="span"
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      fontWeight: 700
+                    }}
+                  >
+                    {item.categoryLabel}
+                  </Box>{' '}
+                  · Last reported {item.timestamp}
                 </Typography>
               </Stack>
+              <ChevronRightIcon
+                sx={{ color: theme.palette.secondary.main, flexShrink: 0 }}
+              />
             </Stack>
           </Box>
           {index < items.length - 1 && (

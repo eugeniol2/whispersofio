@@ -36,7 +36,8 @@ export interface DashboardApiCollection {
 
 export interface DashboardActivityItem {
   id: string
-  icon: DashboardIconKey
+  categoryId: string
+  categoryLabel: string
   title: string
   timestamp: string
 }

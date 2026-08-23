@@ -1,10 +1,17 @@
 'use client'
 
+import CameraAltIcon from '@mui/icons-material/CameraAlt'
+import ImageIcon from '@mui/icons-material/Image'
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import MenuIcon from '@mui/icons-material/Menu'
+import PublicIcon from '@mui/icons-material/Public'
+import ScatterPlotIcon from '@mui/icons-material/ScatterPlot'
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import {
   Box,
   Button,
   IconButton,
+  ListItemIcon,
   Menu,
   MenuItem,
   useMediaQuery,
@@ -15,12 +22,12 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 const navItems = [
-  { label: 'Dashboard', path: '/' },
-  { label: 'APOD', path: '/apod' },
-  { label: 'Earth Events', path: '/earth-events' },
-  { label: 'Mars Rover', path: '/mars-rover' },
-  { label: 'Media Library', path: '/media' },
-  { label: 'Asteroids', path: '/asteroids' }
+  { label: 'Dashboard', path: '/', Icon: SpaceDashboardIcon },
+  { label: 'APOD', path: '/apod', Icon: ImageIcon },
+  { label: 'Earth Events', path: '/earth-events', Icon: PublicIcon },
+  { label: 'Mars Rover', path: '/mars-rover', Icon: CameraAltIcon },
+  { label: 'Media Library', path: '/media', Icon: LibraryBooksIcon },
+  { label: 'Asteroids', path: '/asteroids', Icon: ScatterPlotIcon }
 ]
 
 const isActivePath = (pathname: string, path: string) =>
@@ -60,6 +67,9 @@ export const HeaderNav = () => {
               selected={isActivePath(pathname, item.path)}
               sx={{ minWidth: 190, py: 1.25, fontSize: '1rem' }}
             >
+              <ListItemIcon sx={{ color: 'inherit' }}>
+                <item.Icon fontSize="small" />
+              </ListItemIcon>
               {item.label}
             </MenuItem>
           ))}
@@ -89,9 +99,12 @@ export const HeaderNav = () => {
             href={item.path}
             color="inherit"
             aria-current={active ? 'page' : undefined}
+            startIcon={<item.Icon />}
             sx={{
-              px: 1.75,
+              px: 1.5,
               fontSize: '1rem',
+              whiteSpace: 'nowrap',
+              '& .MuiButton-startIcon': { mr: 0.75 },
               fontWeight: active ? 700 : 500,
               color: active
                 ? theme.palette.secondary.main

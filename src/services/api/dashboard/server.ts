@@ -12,6 +12,7 @@ const activityCache =
 interface EonetEvent {
   id: string
   title: string
+  categories: { id: string; title: string }[]
   geometry: { date: string }[]
 }
 
@@ -38,6 +39,8 @@ export async function getDashboardActivity(): Promise<DashboardActivityResult> {
     .map(event => ({
       id: event.id,
       title: event.title,
+      categoryId: event.categories[0]?.id ?? 'unknown',
+      categoryLabel: event.categories[0]?.title ?? 'Earth Event',
       date: event.geometry[event.geometry.length - 1]?.date
     }))
     .filter((item): item is DashboardActivityResponse => Boolean(item.date))

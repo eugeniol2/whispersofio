@@ -109,6 +109,8 @@ export async function fetchDashboardApiCollections(): Promise<
 export interface DashboardActivityResponse {
   id: string
   title: string
+  categoryId: string
+  categoryLabel: string
   date: string
 }
 
@@ -131,7 +133,8 @@ export function toDashboardActivity(
 ): DashboardActivityItem[] {
   return data.map(item => ({
     id: item.id,
-    icon: 'earthEvents',
+    categoryId: item.categoryId,
+    categoryLabel: item.categoryLabel,
     title: item.title,
     timestamp: formatRelativeTime(item.date)
   }))

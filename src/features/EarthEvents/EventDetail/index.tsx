@@ -20,6 +20,7 @@ import {
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { getEonetCategoryIcon } from '@/components/eonetCategoryIcons'
 import { useEonetEventQuery } from '@/services/api/eonet/queries'
 import type { EonetEvent } from '@/services/api/eonet/types'
 import { useReverseGeocodeQuery } from '@/services/api/geocoding/queries'
@@ -29,7 +30,6 @@ import { formatGeocodeResult } from '@/utils/formatGeocodeResult'
 import { getRepresentativeCoordinates } from '@/utils/getRepresentativeCoordinates'
 import { getZoomEarthStormSlug } from '@/utils/getZoomEarthStormSlug'
 
-import { eonetCategoryIcons } from '../components/icons'
 import { GeometryTimeline } from './components/GeometryTimeline'
 
 interface EarthEventDetailProps {
@@ -65,7 +65,10 @@ export function EarthEventDetail({ id }: EarthEventDetailProps) {
           <CircularProgress color="secondary" />
         </Stack>
       ) : (
-        <EventDetailContent event={eventQuery.data} onCopyLink={handleCopyLink} />
+        <EventDetailContent
+          event={eventQuery.data}
+          onCopyLink={handleCopyLink}
+        />
       )}
 
       <Snackbar
@@ -85,7 +88,7 @@ interface EventDetailContentProps {
 
 function EventDetailContent({ event, onCopyLink }: EventDetailContentProps) {
   const category = event.categories[0]
-  const Icon = eonetCategoryIcons[category.id]
+  const Icon = getEonetCategoryIcon(category.id)
   const latestGeometry = event.geometry[event.geometry.length - 1]
   const [lon, lat] = getRepresentativeCoordinates(latestGeometry)
   const isOpen = event.closed === null
@@ -148,13 +151,22 @@ function EventDetailContent({ event, onCopyLink }: EventDetailContentProps) {
             </Stack>
           </Stack>
 
-          <IconButton onClick={onCopyLink} color="secondary" aria-label="copy link">
+          <IconButton
+            onClick={onCopyLink}
+            color="secondary"
+            aria-label="copy link"
+          >
             <ContentCopyIcon />
           </IconButton>
         </Stack>
 
         {locationText && (
-          <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.5}
+            sx={{ mb: 1 }}
+          >
             <LocationOnIcon
               sx={{ fontSize: 18, color: theme.palette.secondary.main }}
             />

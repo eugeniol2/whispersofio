@@ -129,9 +129,14 @@ export function Dashboard() {
         justifyContent="space-between"
         sx={{ mb: 2 }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Recent Activity
-        </Typography>
+        <Stack>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            Recent Activity
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Ongoing natural events tracked by NASA EONET
+          </Typography>
+        </Stack>
         <MuiLink
           component={Link}
           href="/earth-events"
