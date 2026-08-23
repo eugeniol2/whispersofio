@@ -3,12 +3,13 @@ import { NextResponse } from 'next/server'
 import { ApiError } from '@/services/api/client'
 import {
   fetchRawImagesFeed,
+  listFeedCameras,
   mapFeedPhotos
 } from '@/services/api/marsRover/feed'
 import type {
   CameraView,
-  MarsPhoto,
-  RoverName
+  RoverName,
+  RoverPhotosPayload
 } from '@/services/api/marsRover/types'
 import { createKeyedServerCache } from '@/services/api/serverCache'
 
@@ -17,7 +18,7 @@ const REVALIDATE_MS = 60 * 60 * 1000
 const VALID_ROVERS: RoverName[] = ['curiosity', 'perseverance']
 const VALID_VIEWS: CameraView[] = ['left', 'right', 'sky', 'other']
 
-const photosCache = createKeyedServerCache<MarsPhoto[]>(REVALIDATE_MS)
+const photosCache = createKeyedServerCache<RoverPhotosPayload>(REVALIDATE_MS)
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -52,12 +53,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    const feed = await fetchRawImagesFeed({ rover, sol, camera })
-    const photos = mapFeedPhotos({ rover, images: feed.images, view })
+    // Fetched unfiltered on purpose: the feed costs the same regardless of
+    // payload, and the full sol is what tells us which cameras actually have
+    // images for this sol.
+    const feed = await fetchRawImagesFeed({ rover, sol })
+    const payload: RoverPhotosPayload = {
+      photos: mapFeedPhotos({ rover, images: feed.images, camera, view }),
+      cameras: listFeedCameras(rover, feed.images)
+    }
 
-    photosCache.set(cacheKey, photos)
+    photosCache.set(cacheKey, payload)
 
-    return NextResponse.json(photos, { headers: { 'X-Cache': 'MISS' } })
+    return NextResponse.json(payload, { headers: { 'X-Cache': 'MISS' } })
   } catch (error) {
     const status = error instanceof ApiError ? error.status : 502
     return NextResponse.json(

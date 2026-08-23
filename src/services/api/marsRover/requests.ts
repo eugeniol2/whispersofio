@@ -1,9 +1,9 @@
 import { ApiError } from '../client'
 import type {
   CameraView,
-  MarsPhoto,
   RoverInfoPayload,
-  RoverName
+  RoverName,
+  RoverPhotosPayload
 } from './types'
 
 export async function fetchRoverInfo(
@@ -33,7 +33,7 @@ export async function fetchRoverPhotos({
   camera,
   view,
   signal
-}: FetchRoverPhotosParams): Promise<MarsPhoto[]> {
+}: FetchRoverPhotosParams): Promise<RoverPhotosPayload> {
   const url = new URL('/api/mars-rover/photos', window.location.origin)
   url.searchParams.set('rover', rover)
   url.searchParams.set('sol', String(sol))

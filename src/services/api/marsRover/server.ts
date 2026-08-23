@@ -1,6 +1,6 @@
 import { createKeyedServerCache } from '../serverCache'
-import { fetchRawImagesFeed, mapFeedPhotos } from './feed'
-import { roverCameras, roverMissionFacts } from './roverReference'
+import { fetchRawImagesFeed, listFeedCameras, mapFeedPhotos } from './feed'
+import { roverMissionFacts } from './roverReference'
 import type { RoverInfoPayload, RoverName } from './types'
 
 const REVALIDATE_MS = 6 * 60 * 60 * 1000
@@ -55,8 +55,8 @@ export async function getRoverInfo(
     latestSol: latest.sol,
     latestDate: latest.most_recent,
     totalImages: latest.num_images,
-    cameras: roverCameras[rover],
-    photos: mapFeedPhotos({ rover, images: latest.images })
+    photos: mapFeedPhotos({ rover, images: latest.images }),
+    cameras: listFeedCameras(rover, latest.images)
   }
 
   infoCache.set(rover, data)

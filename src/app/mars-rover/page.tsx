@@ -19,12 +19,12 @@ export default async function MarsRoverPage() {
         const result = await getRoverInfo(rover)
         if (!result) continue
 
-        const { photos, ...info } = result.data
+        const { photos, cameras, ...info } = result.data
 
         queryClient.setQueryData(queryKeys.marsRover.info(rover), info)
         queryClient.setQueryData(
           queryKeys.marsRover.photos(rover, info.latestSol, 'all', 'all'),
-          photos
+          { photos, cameras }
         )
       }
     }

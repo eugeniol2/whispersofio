@@ -5,7 +5,12 @@ import {
   roverCameras,
   roverFeedCategory
 } from './roverReference'
-import type { CameraView, MarsPhoto, RoverName } from './types'
+import type {
+  CameraView,
+  MarsPhoto,
+  RoverCamera,
+  RoverName
+} from './types'
 
 export const PHOTO_LIMIT = 50
 
@@ -66,13 +71,29 @@ export async function fetchRawImagesFeed({
 interface MapFeedPhotosParams {
   rover: RoverName
   images: RawImagesFeed['images']
+  camera?: string | null
   view?: CameraView | null
   limit?: number
+}
+
+export function listFeedCameras(
+  rover: RoverName,
+  images: RawImagesFeed['images']
+): RoverCamera[] {
+  const labels = new Map(
+    roverCameras[rover].map(cam => [cam.name, cam.fullName])
+  )
+  const present = [...new Set(images.map(image => image.camera.instrument))]
+
+  return present
+    .map(name => ({ name, fullName: labels.get(name) ?? name }))
+    .sort((a, b) => a.fullName.localeCompare(b.fullName))
 }
 
 export function mapFeedPhotos({
   rover,
   images,
+  camera,
   view,
   limit = PHOTO_LIMIT
 }: MapFeedPhotosParams): MarsPhoto[] {
@@ -80,9 +101,12 @@ export function mapFeedPhotos({
     roverCameras[rover].map(cam => [cam.name, cam.fullName])
   )
 
-  const matching = view
-    ? images.filter(image => getCameraView(image.camera.instrument) === view)
-    : images
+  const matching = images.filter(image => {
+    const instrument = image.camera.instrument
+    if (camera && instrument !== camera) return false
+    if (view && getCameraView(instrument) !== view) return false
+    return true
+  })
 
   return matching.slice(0, limit).map(image => {
     const instrument = image.camera.instrument

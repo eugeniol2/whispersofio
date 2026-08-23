@@ -16,11 +16,11 @@ export function useRoverInfoQuery(rover: RoverName) {
   return useQuery({
     queryKey: queryKeys.marsRover.info(rover),
     queryFn: async ({ signal }) => {
-      const { photos, ...info } = await fetchRoverInfo(rover, signal)
+      const { photos, cameras, ...info } = await fetchRoverInfo(rover, signal)
 
       queryClient.setQueryData(
         queryKeys.marsRover.photos(rover, info.latestSol, 'all', 'all'),
-        photos
+        { photos, cameras }
       )
 
       return info

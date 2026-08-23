@@ -134,9 +134,10 @@ export const RoverControls = ({
         variant="contained"
         startIcon={<SearchIcon />}
         onClick={onSearch}
-        disabled={loading || solPending}
+        loading={loading || solPending}
+        loadingPosition="start"
       >
-        Get Photos
+        {loading ? 'Loading' : 'Get Photos'}
       </Button>
     </Stack>
   </Card>

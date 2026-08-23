@@ -15,7 +15,6 @@ export interface RoverInfo {
   latestSol: number
   latestDate: string
   totalImages: number
-  cameras: RoverCamera[]
 }
 
 export interface MarsPhoto {
@@ -29,4 +28,10 @@ export interface MarsPhoto {
 
 export interface RoverInfoPayload extends RoverInfo {
   photos: MarsPhoto[]
+  cameras: RoverCamera[]
+}
+
+export interface RoverPhotosPayload {
+  photos: MarsPhoto[]
+  cameras: RoverCamera[]
 }

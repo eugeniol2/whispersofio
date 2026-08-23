@@ -16,8 +16,7 @@ import {
 } from '@/services/api/marsRover/queries'
 import {
   DEFAULT_ROVER,
-  getCameraView,
-  roverCameras
+  getCameraView
 } from '@/services/api/marsRover/roverReference'
 import type { CameraView, RoverName } from '@/services/api/marsRover/types'
 
@@ -36,28 +35,33 @@ export function MarsRover() {
   const latestSol = infoQuery.data?.latestSol ?? null
   const activeSol = committedSol ?? latestSol
 
-  const viewOptions = useMemo(() => {
-    const present = new Set(
-      roverCameras[rover].map(cam => getCameraView(cam.name))
-    )
-    const order: CameraView[] = ['left', 'right', 'sky', 'other']
-    return order.filter(option => present.has(option))
-  }, [rover])
-
-  const cameraOptions = useMemo(
-    () =>
-      view === 'all'
-        ? roverCameras[rover]
-        : roverCameras[rover].filter(cam => getCameraView(cam.name) === view),
-    [rover, view]
-  )
-
   const photosQuery = useRoverPhotosQuery({
     rover,
     sol: activeSol,
     camera,
     view
   })
+
+  // Both filters are built from the cameras this sol actually has, so neither
+  // ever offers an option that would come back empty.
+  const solCameras = useMemo(
+    () => photosQuery.data?.cameras ?? [],
+    [photosQuery.data]
+  )
+
+  const viewOptions = useMemo(() => {
+    const present = new Set(solCameras.map(cam => getCameraView(cam.name)))
+    const order: CameraView[] = ['left', 'right', 'sky', 'other']
+    return order.filter(option => present.has(option))
+  }, [solCameras])
+
+  const cameraOptions = useMemo(
+    () =>
+      view === 'all'
+        ? solCameras
+        : solCameras.filter(cam => getCameraView(cam.name) === view),
+    [solCameras, view]
+  )
 
   const handleRoverChange = (nextRover: RoverName) => {
     setRover(nextRover)
@@ -133,13 +137,22 @@ export function MarsRover() {
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress color="secondary" />
         </Stack>
-      ) : photosQuery.data.length === 0 ? (
+      ) : photosQuery.data.photos.length === 0 ? (
         <Alert severity="info">
           No photos found for this sol and camera combination.
         </Alert>
       ) : (
-        <Grid container spacing={3}>
-          {photosQuery.data.map(photo => (
+        <Grid
+          container
+          spacing={3}
+          aria-busy={photosQuery.isFetching}
+          sx={{
+            transition: 'opacity 0.2s ease',
+            opacity: photosQuery.isFetching ? 0.45 : 1,
+            pointerEvents: photosQuery.isFetching ? 'none' : 'auto'
+          }}
+        >
+          {photosQuery.data.photos.map(photo => (
             <Grid key={photo.id} item xs={12} sm={6} md={4}>
               <MarsPhotoCard photo={photo} />
             </Grid>
