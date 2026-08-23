@@ -9,7 +9,7 @@ import type { CameraView, MarsPhoto, RoverName } from './types'
 
 export const PHOTO_LIMIT = 50
 
-const FEED_TIMEOUT_MS = 20000
+const FEED_TIMEOUT_MS = 45000
 const FEED_CACHE_SECONDS = 6 * 60 * 60
 
 export interface RawImagesFeed {

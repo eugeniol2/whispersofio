@@ -6,7 +6,7 @@ import type { RoverInfoPayload, RoverName } from './types'
 const REVALIDATE_MS = 6 * 60 * 60 * 1000
 const MARS_SOL_IN_EARTH_DAYS = 1.0274912
 const SOL_PROBE_WINDOW = 12
-const SOL_PROBE_BUDGET_MS = 25000
+const SOL_PROBE_BUDGET_MS = 90000
 
 const infoCache = createKeyedServerCache<RoverInfoPayload>(REVALIDATE_MS)
 
