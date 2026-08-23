@@ -3,6 +3,26 @@ import React from 'react'
 
 import theme from '@/theme/theme'
 
+const apis = [
+  { label: 'APOD', href: 'https://api.nasa.gov/#apod' },
+  { label: 'EONET', href: 'https://eonet.gsfc.nasa.gov/docs/v3' },
+  {
+    label: 'Mars Raw Images',
+    href: 'https://mars.nasa.gov/msl/multimedia/raw-images/'
+  },
+  { label: 'Image & Video Library', href: 'https://images.nasa.gov/' },
+  { label: 'NeoWs', href: 'https://api.nasa.gov/#NeoWS' },
+  { label: 'JPL Horizons', href: 'https://ssd.jpl.nasa.gov/horizons/' }
+]
+
+const socials = [
+  { label: 'GitHub', href: 'https://github.com/eugeniol2/whispersofio' },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/eugenio-dorneles-araujo/'
+  }
+]
+
 const Footer = () => {
   return (
     <Box
@@ -59,31 +79,19 @@ const Footer = () => {
               APIs
             </Typography>
             <Box component="ul" sx={{ listStyle: 'none', pl: 0, mt: 2 }}>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  APOD
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Earth Events
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Mars Rover
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Asteroids
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Space Weather
-                </Link>
-              </li>
+              {apis.map(api => (
+                <li key={api.label}>
+                  <Link
+                    href={api.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="hover"
+                    color="inherit"
+                  >
+                    {api.label}
+                  </Link>
+                </li>
+              ))}
             </Box>
           </Box>
 
@@ -96,16 +104,19 @@ const Footer = () => {
               Connect
             </Typography>
             <Box component="ul" sx={{ listStyle: 'none', pl: 0, mt: 2 }}>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  GitHub
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Twitter
-                </Link>
-              </li>
+              {socials.map(social => (
+                <li key={social.href}>
+                  <Link
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="hover"
+                    color="inherit"
+                  >
+                    {social.label}
+                  </Link>
+                </li>
+              ))}
             </Box>
           </Box>
         </Box>
