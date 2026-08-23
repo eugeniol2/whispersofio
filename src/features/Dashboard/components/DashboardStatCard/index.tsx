@@ -13,7 +13,18 @@ export const DashboardStatCard = ({ stat }: DashboardStatCardProps) => {
   const Icon = dashboardIcons[stat.icon]
 
   return (
-    <Card sx={{ p: 2.5 }}>
+    <Card
+      // The theme lifts cards on hover, which suggests they're clickable.
+      // These are read-only counters, so the hover state is cancelled.
+      sx={{
+        p: 2.5,
+        transition: 'none',
+        '&:hover': {
+          transform: 'none',
+          borderColor: 'rgba(74, 30, 106, 0.5)'
+        }
+      }}
+    >
       <Stack direction="row" alignItems="center" spacing={2}>
         <Stack
           alignItems="center"
