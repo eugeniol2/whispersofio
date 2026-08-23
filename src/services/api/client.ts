@@ -14,11 +14,12 @@ export class ApiError extends Error {
 
 interface ApiClientOptions extends RequestInit {
   params?: Record<string, string | number | undefined>
+  revalidate?: number
 }
 
 export async function apiClient<T>(
   path: string,
-  { params, ...init }: ApiClientOptions = {}
+  { params, revalidate, ...init }: ApiClientOptions = {}
 ): Promise<T> {
   const url = new URL(path, NASA_API_BASE_URL)
   url.searchParams.set('api_key', NASA_API_KEY)
@@ -27,7 +28,10 @@ export async function apiClient<T>(
     if (value !== undefined) url.searchParams.set(key, String(value))
   }
 
-  const response = await fetch(url, init)
+  const response = await fetch(url, {
+    ...init,
+    ...(revalidate === undefined ? {} : { next: { revalidate } })
+  })
 
   if (!response.ok) {
     throw new ApiError(

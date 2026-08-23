@@ -9,6 +9,8 @@ import type {
   EonetTimeRange
 } from './types'
 
+const UPSTREAM_CACHE_SECONDS = 15 * 60
+
 const TIME_RANGE_DAYS: Record<Exclude<EonetTimeRange, 'all'>, number> = {
   today: 1,
   week: 7,
@@ -18,7 +20,10 @@ const TIME_RANGE_DAYS: Record<Exclude<EonetTimeRange, 'all'>, number> = {
 export async function fetchEonetCategories(
   signal?: AbortSignal
 ): Promise<EonetCategory[]> {
-  const response = await fetch(`${EONET_BASE_URL}/categories`, { signal })
+  const response = await fetch(`${EONET_BASE_URL}/categories`, {
+    signal,
+    next: { revalidate: UPSTREAM_CACHE_SECONDS }
+  })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to fetch EONET categories')
@@ -51,7 +56,10 @@ export async function fetchEonetEvents({
     url.searchParams.set('days', String(TIME_RANGE_DAYS[timeRange]))
   }
 
-  const response = await fetch(url, { signal })
+  const response = await fetch(url, {
+    signal,
+    next: { revalidate: UPSTREAM_CACHE_SECONDS }
+  })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to fetch EONET events')

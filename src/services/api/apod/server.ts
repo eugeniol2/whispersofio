@@ -3,6 +3,7 @@ import { createKeyedServerCache } from '../serverCache'
 
 const REVALIDATE_MS = 60 * 60 * 4 * 1000
 
+const UPSTREAM_CACHE_SECONDS = 60 * 60 * 4
 const apodCache = createKeyedServerCache<unknown>(REVALIDATE_MS, 60)
 
 const HEAD_TIMEOUT_MS = 6000
@@ -90,7 +91,10 @@ export async function getApod({
   }
 
   const apod = await attachVideoSizes(
-    await apiClient('/planetary/apod', { params })
+    await apiClient('/planetary/apod', {
+      params,
+      revalidate: UPSTREAM_CACHE_SECONDS
+    })
   )
 
   if (cacheKey) apodCache.set(cacheKey, apod)

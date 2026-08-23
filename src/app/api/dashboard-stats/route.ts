@@ -8,6 +8,8 @@ import {
 import { createServerCache } from '@/services/api/serverCache'
 
 const REVALIDATE_MS = 60 * 60 * 1000
+const UPSTREAM_CACHE_SECONDS = 60 * 60
+const EARTH_EVENTS_WINDOW_DAYS = 30
 
 interface DashboardStatsPayload {
   earthEvents: number | null
@@ -22,7 +24,12 @@ interface EonetEventsResponse {
 }
 
 async function fetchEarthEventsCount(): Promise<number> {
-  const response = await fetch(`${EONET_BASE_URL}/events?status=open`)
+  const response = await fetch(
+    `${EONET_BASE_URL}/events?status=open&days=${EARTH_EVENTS_WINDOW_DAYS}`,
+    {
+      next: { revalidate: UPSTREAM_CACHE_SECONDS }
+    }
+  )
 
   if (!response.ok) {
     throw new ApiError(response.status, `EONET request failed: ${response.status}`)
@@ -39,7 +46,8 @@ interface NeoFeedResponse {
 async function fetchNearAsteroidsCount(): Promise<number> {
   const today = new Date().toISOString().slice(0, 10)
   const data = await apiClient<NeoFeedResponse>('/neo/rest/v1/feed', {
-    params: { start_date: today, end_date: today }
+    params: { start_date: today, end_date: today },
+    revalidate: UPSTREAM_CACHE_SECONDS
   })
   return data.element_count
 }
@@ -55,7 +63,9 @@ async function fetchMarsPhotosTotal(): Promise<number> {
   url.searchParams.set('category', 'mars2020')
   url.searchParams.set('num', '1')
 
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    next: { revalidate: UPSTREAM_CACHE_SECONDS }
+  })
 
   if (!response.ok) {
     throw new ApiError(

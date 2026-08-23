@@ -1,9 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    appDir: true,
-    serverActions: true
-  },
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -15,10 +12,7 @@ const nextConfig = {
   eslint: {
     dirs: ['src']
   },
-  typescript: {
-    ignoreBuildErrors: true
-  },
   transpilePackages: ['@mui/material', '@mui/icons-material']
 }
 
-module.exports = nextConfig
+export default nextConfig

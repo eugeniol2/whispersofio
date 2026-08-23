@@ -10,6 +10,7 @@ const RANGE_DAYS: Record<AsteroidRange, number> = {
   '7days': 6
 }
 
+const UPSTREAM_CACHE_SECONDS = 60 * 60
 const feedCache = createKeyedServerCache<AsteroidFeed>(REVALIDATE_MS)
 
 interface NeoFeedResponse {
@@ -61,7 +62,8 @@ export async function getAsteroidFeed(
   if (hit) return { data: hit.data, cacheAgeSeconds: hit.ageSeconds }
 
   const data = await apiClient<NeoFeedResponse>('/neo/rest/v1/feed', {
-    params: { start_date: rangeStart, end_date: rangeEnd }
+    params: { start_date: rangeStart, end_date: rangeEnd },
+    revalidate: UPSTREAM_CACHE_SECONDS
   })
 
   const asteroids: Asteroid[] = Object.values(data.near_earth_objects)

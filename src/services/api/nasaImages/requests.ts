@@ -44,6 +44,8 @@ interface AssetResponse {
   collection: { items: { href: string }[] }
 }
 
+const UPSTREAM_CACHE_SECONDS = 60 * 60
+
 const VIDEO_VARIANTS = ['mobile', 'small', 'medium', 'large']
 
 function toPlayableUrl(href: string): string {
@@ -101,7 +103,10 @@ export async function searchNasaMedia({
     mediaType === 'all' ? 'image,video' : mediaType
   )
 
-  const response = await fetch(url, { signal })
+  const response = await fetch(url, {
+    signal,
+    next: { revalidate: UPSTREAM_CACHE_SECONDS }
+  })
 
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to search the NASA library')

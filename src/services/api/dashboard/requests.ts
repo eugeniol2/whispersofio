@@ -34,7 +34,7 @@ export async function fetchDashboardStats(): Promise<DashboardStat[]> {
       id: 'earth-events',
       icon: 'earthEvents',
       value: data.earthEvents.toLocaleString('en-US'),
-      label: 'Earth Events'
+      label: 'Earth Events (30d)'
     })
   }
   if (data.nearAsteroids !== null) {

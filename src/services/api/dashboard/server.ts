@@ -5,6 +5,7 @@ import type { DashboardActivityResponse } from './requests'
 const REVALIDATE_MS = 60 * 60 * 1000
 const ACTIVITY_LIMIT = 5
 
+const UPSTREAM_CACHE_SECONDS = 60 * 60
 const activityCache =
   createServerCache<DashboardActivityResponse[]>(REVALIDATE_MS)
 
@@ -23,7 +24,9 @@ export async function getDashboardActivity(): Promise<DashboardActivityResult> {
   const hit = activityCache.get()
   if (hit) return { data: hit.data, cacheAgeSeconds: hit.ageSeconds }
 
-  const response = await fetch(`${EONET_BASE_URL}/events?status=open&limit=20`)
+  const response = await fetch(`${EONET_BASE_URL}/events?status=open&limit=20`, {
+    next: { revalidate: UPSTREAM_CACHE_SECONDS }
+  })
 
   if (!response.ok) {
     throw new Error(`EONET request failed: ${response.status}`)
