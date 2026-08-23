@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
+import { STALE_TIME_HOURLY } from '../staleTimes'
 import { fetchRoverInfo, fetchRoverPhotos } from './requests'
 import type { CameraView, RoverName } from './types'
 
@@ -15,6 +16,7 @@ export function useRoverInfoQuery(rover: RoverName) {
 
   return useQuery({
     queryKey: queryKeys.marsRover.info(rover),
+    staleTime: STALE_TIME_HOURLY,
     queryFn: async ({ signal }) => {
       const { photos, cameras, ...info } = await fetchRoverInfo(rover, signal)
 
@@ -43,6 +45,7 @@ export function useRoverPhotosQuery({
 }: UseRoverPhotosQueryParams) {
   return useQuery({
     queryKey: queryKeys.marsRover.photos(rover, sol ?? -1, camera, view),
+    staleTime: STALE_TIME_HOURLY,
     queryFn: ({ signal }) => {
       if (sol === null) throw new Error('Sol is required')
 

@@ -13,7 +13,7 @@ const MOCK_LATENCY_MS = 400
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-interface DashboardStatsResponse {
+export interface DashboardStatsResponse {
   earthEvents: number | null
   nearAsteroids: number | null
   marsPhotos: number | null
@@ -26,7 +26,12 @@ export async function fetchDashboardStats(): Promise<DashboardStat[]> {
     throw new ApiError(response.status, 'Failed to fetch dashboard stats')
   }
 
-  const data: DashboardStatsResponse = await response.json()
+  return toDashboardStats(await response.json())
+}
+
+export function toDashboardStats(
+  data: DashboardStatsResponse
+): DashboardStat[] {
   const stats: DashboardStat[] = []
 
   if (data.earthEvents !== null) {

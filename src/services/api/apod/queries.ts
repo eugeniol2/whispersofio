@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
+import { STALE_TIME_HOURLY } from '../staleTimes'
 import {
   fetchApod,
   fetchApodStats,
@@ -22,13 +23,16 @@ export function useApodQuery({ mode, date, randomToken }: UseApodQueryParams) {
       mode === 'random'
         ? queryKeys.apod.random(randomToken)
         : queryKeys.apod.byDate(date),
-    queryFn: () => (mode === 'random' ? fetchRandomApod() : fetchApod(date))
+    queryFn: () => (mode === 'random' ? fetchRandomApod() : fetchApod(date)),
+    // A new random token is a new key, so this never pins a random pick.
+    staleTime: STALE_TIME_HOURLY
   })
 }
 
 export function useRecentApodsQuery() {
   return useQuery({
     queryKey: queryKeys.apod.recent,
+    staleTime: STALE_TIME_HOURLY,
     queryFn: fetchRecentApods
   })
 }
@@ -36,6 +40,7 @@ export function useRecentApodsQuery() {
 export function useApodStatsQuery() {
   return useQuery({
     queryKey: queryKeys.apod.stats,
+    staleTime: STALE_TIME_HOURLY,
     queryFn: fetchApodStats
   })
 }

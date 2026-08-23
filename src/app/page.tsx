@@ -12,9 +12,11 @@ import type { NasaApodApiResponse } from '@/services/api/dashboard/requests'
 import {
   fetchDashboardApiCollections,
   toDashboardActivity,
-  toDashboardFeaturedContent
+  toDashboardFeaturedContent,
+  toDashboardStats
 } from '@/services/api/dashboard/requests'
 import { getDashboardActivity } from '@/services/api/dashboard/server'
+import { getDashboardStats } from '@/services/api/dashboard/statsServer'
 import { createDehydratedState } from '@/services/api/prefetch'
 import { queryKeys } from '@/services/api/queryKeys'
 
@@ -40,6 +42,13 @@ export default async function DashboardPage() {
       queryClient.setQueryData(
         queryKeys.dashboard.apiCollections,
         await fetchDashboardApiCollections()
+      )
+    },
+    async queryClient => {
+      const { data } = await getDashboardStats()
+      queryClient.setQueryData(
+        queryKeys.dashboard.stats,
+        toDashboardStats(data)
       )
     },
     async queryClient => {

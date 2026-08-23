@@ -3,6 +3,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
+import { STALE_TIME_HOURLY, STALE_TIME_QUARTER_HOURLY } from '../staleTimes'
 import {
   fetchCategoryAvailability,
   fetchEonetCategories,
@@ -14,6 +15,7 @@ import type { EonetLimit, EonetStatusFilter, EonetTimeRange } from './types'
 export function useEonetCategoriesQuery() {
   return useQuery({
     queryKey: queryKeys.eonet.categories,
+    staleTime: STALE_TIME_HOURLY,
     queryFn: ({ signal }) => fetchEonetCategories(signal)
   })
 }
@@ -21,6 +23,7 @@ export function useEonetCategoriesQuery() {
 export function useEonetEventQuery(id: string) {
   return useQuery({
     queryKey: queryKeys.eonet.eventById(id),
+    staleTime: STALE_TIME_QUARTER_HOURLY,
     queryFn: ({ signal }) => fetchEonetEventById(id, signal)
   })
 }
@@ -36,6 +39,7 @@ export function useEonetCategoryAvailabilityQuery({
 }: UseEonetCategoryAvailabilityQueryParams) {
   return useQuery({
     queryKey: queryKeys.eonet.categoryAvailability(status, timeRange),
+    staleTime: STALE_TIME_QUARTER_HOURLY,
     queryFn: ({ signal }) =>
       fetchCategoryAvailability({ status, timeRange, signal }),
     placeholderData: keepPreviousData
@@ -57,6 +61,7 @@ export function useEonetEventsQuery({
 }: UseEonetEventsQueryParams) {
   return useQuery({
     queryKey: queryKeys.eonet.events(status, categoryId, limit, timeRange),
+    staleTime: STALE_TIME_QUARTER_HOURLY,
     queryFn: ({ signal }) =>
       fetchEonetEvents({
         status,
