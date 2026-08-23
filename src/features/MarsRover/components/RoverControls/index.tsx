@@ -29,6 +29,7 @@ interface RoverControlsProps {
   sol: string
   onSolChange: (sol: string) => void
   maxSol?: number
+  solPending?: boolean
   view: string
   onViewChange: (view: string) => void
   viewOptions: CameraView[]
@@ -45,6 +46,7 @@ export const RoverControls = ({
   sol,
   onSolChange,
   maxSol,
+  solPending = false,
   view,
   onViewChange,
   viewOptions,
@@ -83,7 +85,14 @@ export const RoverControls = ({
           size="small"
           value={sol}
           onChange={event => onSolChange(event.target.value)}
-          helperText={maxSol ? `Latest: ${maxSol.toLocaleString('en-US')}` : ' '}
+          disabled={solPending}
+          helperText={
+            solPending
+              ? 'Finding latest sol…'
+              : maxSol
+                ? `Latest: ${maxSol.toLocaleString('en-US')}`
+                : ' '
+          }
           slotProps={{ htmlInput: { min: 0, max: maxSol } }}
           sx={{ width: { sm: 140 } }}
         />
@@ -125,7 +134,7 @@ export const RoverControls = ({
         variant="contained"
         startIcon={<SearchIcon />}
         onClick={onSearch}
-        disabled={loading}
+        disabled={loading || solPending}
       >
         Get Photos
       </Button>

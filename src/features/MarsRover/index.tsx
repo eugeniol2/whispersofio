@@ -104,6 +104,7 @@ export function MarsRover() {
         sol={draftSol !== '' ? draftSol : (latestSol?.toString() ?? '')}
         onSolChange={setDraftSol}
         maxSol={latestSol ?? undefined}
+        solPending={infoQuery.isPending}
         view={view}
         onViewChange={handleViewChange}
         viewOptions={viewOptions}

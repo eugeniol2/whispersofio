@@ -1,32 +1,37 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient
-} from '@tanstack/react-query'
+import { HydrationBoundary } from '@tanstack/react-query'
 
 import { MarsRover } from '@/features/MarsRover'
 import { DEFAULT_ROVER } from '@/services/api/marsRover/roverReference'
 import { getRoverInfo } from '@/services/api/marsRover/server'
+import type { RoverName } from '@/services/api/marsRover/types'
+import { createDehydratedState } from '@/services/api/prefetch'
 import { queryKeys } from '@/services/api/queryKeys'
+
+const ROVERS: RoverName[] = [DEFAULT_ROVER, 'perseverance']
 
 export const revalidate = 3600
 
 export default async function MarsRoverPage() {
-  const queryClient = new QueryClient()
-  const result = await getRoverInfo(DEFAULT_ROVER)
+  const state = await createDehydratedState([
+    async queryClient => {
+      
+      for (const rover of ROVERS) {
+        const result = await getRoverInfo(rover)
+        if (!result) continue
 
-  if (result) {
-    const { photos, ...info } = result.data
+        const { photos, ...info } = result.data
 
-    queryClient.setQueryData(queryKeys.marsRover.info(DEFAULT_ROVER), info)
-    queryClient.setQueryData(
-      queryKeys.marsRover.photos(DEFAULT_ROVER, info.latestSol, 'all', 'all'),
-      photos
-    )
-  }
+        queryClient.setQueryData(queryKeys.marsRover.info(rover), info)
+        queryClient.setQueryData(
+          queryKeys.marsRover.photos(rover, info.latestSol, 'all', 'all'),
+          photos
+        )
+      }
+    }
+  ])
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={state}>
       <MarsRover />
     </HydrationBoundary>
   )
