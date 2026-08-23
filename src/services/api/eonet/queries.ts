@@ -4,17 +4,12 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
 import {
-  fetchAvailableCategoryIds,
+  fetchCategoryAvailability,
   fetchEonetCategories,
   fetchEonetEventById,
   fetchEonetEvents
 } from './requests'
-import type {
-  EonetCategoryId,
-  EonetLimit,
-  EonetStatusFilter,
-  EonetTimeRange
-} from './types'
+import type { EonetLimit, EonetStatusFilter, EonetTimeRange } from './types'
 
 export function useEonetCategoriesQuery() {
   return useQuery({
@@ -33,19 +28,16 @@ export function useEonetEventQuery(id: string) {
 interface UseEonetCategoryAvailabilityQueryParams {
   status: EonetStatusFilter
   timeRange: EonetTimeRange
-  categoryIds: EonetCategoryId[]
 }
 
 export function useEonetCategoryAvailabilityQuery({
   status,
-  timeRange,
-  categoryIds
+  timeRange
 }: UseEonetCategoryAvailabilityQueryParams) {
   return useQuery({
     queryKey: queryKeys.eonet.categoryAvailability(status, timeRange),
     queryFn: ({ signal }) =>
-      fetchAvailableCategoryIds({ status, timeRange, categoryIds, signal }),
-    enabled: categoryIds.length > 0,
+      fetchCategoryAvailability({ status, timeRange, signal }),
     placeholderData: keepPreviousData
   })
 }

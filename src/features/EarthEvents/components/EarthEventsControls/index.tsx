@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, MenuItem, Stack, TextField } from '@mui/material'
+import { Card, LinearProgress, MenuItem, Stack, TextField } from '@mui/material'
 
 import type {
   EonetCategory,
@@ -19,6 +19,7 @@ interface EarthEventsControlsProps {
   onLimitChange: (limit: EonetLimit) => void
   timeRange: EonetTimeRange
   onTimeRangeChange: (timeRange: EonetTimeRange) => void
+  loading?: boolean
 }
 
 export const EarthEventsControls = ({
@@ -30,10 +31,21 @@ export const EarthEventsControls = ({
   limit,
   onLimitChange,
   timeRange,
-  onTimeRangeChange
+  onTimeRangeChange,
+  loading = false
 }: EarthEventsControlsProps) => (
-  <Card sx={{ p: 3, mb: 4 }}>
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={4}>
+  <Card sx={{ mb: 4, overflow: 'hidden' }}>
+    {/* Kept mounted so toggling it never shifts the filters below. */}
+    <LinearProgress
+      color="secondary"
+      sx={{ height: 3, visibility: loading ? 'visible' : 'hidden' }}
+    />
+    <Stack
+      direction={{ xs: 'column', sm: 'row' }}
+      spacing={4}
+      sx={{ p: 3 }}
+      aria-busy={loading}
+    >
       <TextField
         select
         label="Status"

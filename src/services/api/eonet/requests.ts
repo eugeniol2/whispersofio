@@ -110,3 +110,29 @@ export async function fetchAvailableCategoryIds({
 
   return results.filter((id): id is EonetCategoryId => id !== null)
 }
+
+interface FetchCategoryAvailabilityParams {
+  status: EonetStatusFilter
+  timeRange: EonetTimeRange
+  signal?: AbortSignal
+}
+
+export async function fetchCategoryAvailability({
+  status,
+  timeRange,
+  signal
+}: FetchCategoryAvailabilityParams): Promise<EonetCategoryId[]> {
+  const response = await fetch(
+    `/api/eonet/category-availability?status=${status}&timeRange=${timeRange}`,
+    { signal }
+  )
+
+  if (!response.ok) {
+    throw new ApiError(
+      response.status,
+      'Failed to fetch EONET category availability'
+    )
+  }
+
+  return response.json()
+}

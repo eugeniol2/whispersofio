@@ -1,6 +1,12 @@
 'use client'
 
-import { Alert, CircularProgress, Container, Stack, Typography } from '@mui/material'
+import {
+  Alert,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 
 import {
@@ -17,6 +23,7 @@ import type {
 
 import { EarthEventCard } from './components/EarthEventCard'
 import { EarthEventsControls } from './components/EarthEventsControls'
+import { EventsErrorState } from './components/EventsErrorState'
 
 const DEFAULT_LIMIT: EonetLimit = 30
 const DEFAULT_TIME_RANGE: EonetTimeRange = 'today'
@@ -25,8 +32,7 @@ export function EarthEvents() {
   const [status, setStatus] = useState<EonetStatusFilter>('open')
   const [categoryId, setCategoryId] = useState('all')
   const [limit, setLimit] = useState<EonetLimit>(DEFAULT_LIMIT)
-  const [timeRange, setTimeRange] =
-    useState<EonetTimeRange>(DEFAULT_TIME_RANGE)
+  const [timeRange, setTimeRange] = useState<EonetTimeRange>(DEFAULT_TIME_RANGE)
 
   const categoriesQuery = useEonetCategoriesQuery()
   const eventsQuery = useEonetEventsQuery({
@@ -36,11 +42,9 @@ export function EarthEvents() {
     timeRange
   })
 
-  const allCategoryIds = categoriesQuery.data?.map(cat => cat.id) ?? []
   const availabilityQuery = useEonetCategoryAvailabilityQuery({
     status,
-    timeRange,
-    categoryIds: allCategoryIds
+    timeRange
   })
 
   const categoryOptions = availabilityQuery.data
@@ -48,6 +52,10 @@ export function EarthEvents() {
         availabilityQuery.data.includes(cat.id)
       )
     : (categoriesQuery.data ?? [])
+
+  // Filters apply on change, so both the events request and the category
+  // availability probes have to feed the same busy indicator.
+  const isUpdating = eventsQuery.isFetching || availabilityQuery.isFetching
 
   useEffect(() => {
     if (
@@ -75,9 +83,9 @@ export function EarthEvents() {
           color="text.secondary"
           sx={{ maxWidth: 640 }}
         >
-          Track natural events happening around the globe — wildfires,
-          storms, volcanoes, and more — sourced from NASA&apos;s Earth
-          Observatory Natural Event Tracker.
+          Track natural events happening around the globe — wildfires, storms,
+          volcanoes, and more — sourced from NASA&apos;s Earth Observatory
+          Natural Event Tracker.
         </Typography>
       </Stack>
 
@@ -91,10 +99,15 @@ export function EarthEvents() {
         onLimitChange={setLimit}
         timeRange={timeRange}
         onTimeRangeChange={setTimeRange}
+        loading={isUpdating}
       />
 
       {eventsQuery.isError ? (
-        <Alert severity="error">Failed to load Earth events.</Alert>
+        <EventsErrorState
+          error={eventsQuery.error}
+          onRetry={() => eventsQuery.refetch()}
+          retrying={eventsQuery.isFetching}
+        />
       ) : eventsQuery.isPending ? (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress color="secondary" />
@@ -104,7 +117,15 @@ export function EarthEvents() {
           No events found for this status/category combination.
         </Alert>
       ) : (
-        <Stack spacing={2}>
+        <Stack
+          spacing={2}
+          aria-busy={eventsQuery.isFetching}
+          sx={{
+            transition: 'opacity 0.2s ease',
+            opacity: eventsQuery.isFetching ? 0.45 : 1,
+            pointerEvents: eventsQuery.isFetching ? 'none' : 'auto'
+          }}
+        >
           {eventsQuery.data.map(event => (
             <EarthEventCard key={event.id} event={event} />
           ))}
