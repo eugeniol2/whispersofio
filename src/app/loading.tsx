@@ -1,5 +1,5 @@
-import { PageSkeleton } from '@/components/PageSkeleton'
+import { SpaceLoader } from '@/components/SpaceLoader'
 
 export default function Loading() {
-  return <PageSkeleton stats={3} featured cards={6} />
+  return <SpaceLoader />
 }
