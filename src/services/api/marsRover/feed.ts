@@ -1,7 +1,9 @@
 import { ApiError } from '../client'
 import { MARS_RAW_IMAGES_BASE_URL } from '../endpoints'
-import { roverFeedCategory } from './roverReference'
-import type { RoverName } from './types'
+import { getCameraView, roverCameras, roverFeedCategory } from './roverReference'
+import type { CameraView, MarsPhoto, RoverName } from './types'
+
+export const PHOTO_LIMIT = 50
 
 const FEED_TIMEOUT_MS = 20000
 
@@ -55,4 +57,45 @@ export async function fetchRawImagesFeed({
   const data: RawImagesFeed = await response.json()
 
   return { ...data, images: data.images ?? [] }
+}
+
+interface MapFeedPhotosParams {
+  rover: RoverName
+  images: RawImagesFeed['images']
+  view?: CameraView | null
+  limit?: number
+}
+
+export function mapFeedPhotos({
+  rover,
+  images,
+  view,
+  limit = PHOTO_LIMIT
+}: MapFeedPhotosParams): MarsPhoto[] {
+  const cameraLabels = new Map(
+    roverCameras[rover].map(cam => [cam.name, cam.fullName])
+  )
+
+  const matching = view
+    ? images.filter(image => getCameraView(image.camera.instrument) === view)
+    : images
+
+  return matching.slice(0, limit).map(image => {
+    const instrument = image.camera.instrument
+    const files = image.image_files
+    const preview = files.medium ?? files.large ?? files.small ?? ''
+
+    return {
+      id: image.imageid,
+      sol: image.sol,
+      earthDate: image.date_taken_utc.slice(0, 10),
+      camera: {
+        name: instrument,
+        fullName: cameraLabels.get(instrument) ?? instrument
+      },
+      imageUrl: preview,
+      // The feed's own `link` 403s for Curiosity, so point at the image itself
+      fullImageUrl: files.full_res ?? files.large ?? preview
+    }
+  })
 }

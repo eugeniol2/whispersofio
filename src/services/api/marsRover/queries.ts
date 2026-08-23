@@ -1,15 +1,32 @@
 'use client'
 
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient
+} from '@tanstack/react-query'
 
 import { queryKeys } from '../queryKeys'
 import { fetchRoverInfo, fetchRoverPhotos } from './requests'
 import type { CameraView, RoverName } from './types'
 
 export function useRoverInfoQuery(rover: RoverName) {
+  const queryClient = useQueryClient()
+
   return useQuery({
     queryKey: queryKeys.marsRover.info(rover),
-    queryFn: ({ signal }) => fetchRoverInfo(rover, signal)
+    queryFn: async ({ signal }) => {
+      const { photos, ...info } = await fetchRoverInfo(rover, signal)
+
+      // The info response already carries this sol's photos, so prime the cache
+      // and spare the default view a second request.
+      queryClient.setQueryData(
+        queryKeys.marsRover.photos(rover, info.latestSol, 'all', 'all'),
+        photos
+      )
+
+      return info
+    }
   })
 }
 

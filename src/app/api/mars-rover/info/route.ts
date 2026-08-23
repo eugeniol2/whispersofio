@@ -1,11 +1,17 @@
 import { NextResponse } from 'next/server'
 
-import { fetchRawImagesFeed } from '@/services/api/marsRover/feed'
+import {
+  fetchRawImagesFeed,
+  mapFeedPhotos
+} from '@/services/api/marsRover/feed'
 import {
   roverCameras,
   roverMissionFacts
 } from '@/services/api/marsRover/roverReference'
-import type { RoverInfo, RoverName } from '@/services/api/marsRover/types'
+import type {
+  RoverInfoPayload,
+  RoverName
+} from '@/services/api/marsRover/types'
 import { createKeyedServerCache } from '@/services/api/serverCache'
 
 const REVALIDATE_MS = 6 * 60 * 60 * 1000
@@ -14,7 +20,7 @@ const SOL_PROBE_WINDOW = 12
 
 const VALID_ROVERS: RoverName[] = ['curiosity', 'perseverance']
 
-const infoCache = createKeyedServerCache<RoverInfo>(REVALIDATE_MS)
+const infoCache = createKeyedServerCache<RoverInfoPayload>(REVALIDATE_MS)
 
 function getEstimatedSol(landingDate: string): number {
   const elapsedDays =
@@ -71,12 +77,15 @@ export async function GET(request: Request) {
     )
   }
 
-  const info: RoverInfo = {
+  // The probe already downloaded this sol in full, so the photos ride along with
+  // the info and the client skips a second round trip for the default view.
+  const info: RoverInfoPayload = {
     ...facts,
     latestSol: latest.sol,
     latestDate: latest.most_recent,
     totalImages: latest.num_images,
-    cameras: roverCameras[rover]
+    cameras: roverCameras[rover],
+    photos: mapFeedPhotos({ rover, images: latest.images })
   }
 
   infoCache.set(rover, info)

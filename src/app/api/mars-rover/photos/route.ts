@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 
 import { ApiError } from '@/services/api/client'
-import { fetchRawImagesFeed } from '@/services/api/marsRover/feed'
 import {
-  getCameraView,
-  roverCameras
-} from '@/services/api/marsRover/roverReference'
+  fetchRawImagesFeed,
+  mapFeedPhotos
+} from '@/services/api/marsRover/feed'
 import type {
   CameraView,
   MarsPhoto,
@@ -14,7 +13,6 @@ import type {
 import { createKeyedServerCache } from '@/services/api/serverCache'
 
 const REVALIDATE_MS = 60 * 60 * 1000
-const PHOTO_LIMIT = 50
 
 const VALID_ROVERS: RoverName[] = ['curiosity', 'perseverance']
 const VALID_VIEWS: CameraView[] = ['left', 'right', 'sky', 'other']
@@ -55,35 +53,7 @@ export async function GET(request: Request) {
 
   try {
     const feed = await fetchRawImagesFeed({ rover, sol, camera })
-
-    const cameraLabels = new Map(
-      roverCameras[rover].map(cam => [cam.name, cam.fullName])
-    )
-
-    const matching = view
-      ? feed.images.filter(
-          image => getCameraView(image.camera.instrument) === view
-        )
-      : feed.images
-
-    const photos: MarsPhoto[] = matching.slice(0, PHOTO_LIMIT).map(image => {
-      const instrument = image.camera.instrument
-      const files = image.image_files
-      const preview = files.medium ?? files.large ?? files.small ?? ''
-
-      return {
-        id: image.imageid,
-        sol: image.sol,
-        earthDate: image.date_taken_utc.slice(0, 10),
-        camera: {
-          name: instrument,
-          fullName: cameraLabels.get(instrument) ?? instrument
-        },
-        imageUrl: preview,
-        // The feed's own `link` 403s for Curiosity, so point at the image itself
-        fullImageUrl: files.full_res ?? files.large ?? preview
-      }
-    })
+    const photos = mapFeedPhotos({ rover, images: feed.images, view })
 
     photosCache.set(cacheKey, photos)
 

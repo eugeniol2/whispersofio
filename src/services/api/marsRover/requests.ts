@@ -1,10 +1,15 @@
 import { ApiError } from '../client'
-import type { CameraView, MarsPhoto, RoverInfo, RoverName } from './types'
+import type {
+  CameraView,
+  MarsPhoto,
+  RoverInfoPayload,
+  RoverName
+} from './types'
 
 export async function fetchRoverInfo(
   rover: RoverName,
   signal?: AbortSignal
-): Promise<RoverInfo> {
+): Promise<RoverInfoPayload> {
   const response = await fetch(`/api/mars-rover/info?rover=${rover}`, { signal })
 
   if (!response.ok) {

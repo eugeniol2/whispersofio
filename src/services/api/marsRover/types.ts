@@ -26,3 +26,7 @@ export interface MarsPhoto {
   imageUrl: string
   fullImageUrl: string
 }
+
+export interface RoverInfoPayload extends RoverInfo {
+  photos: MarsPhoto[]
+}
