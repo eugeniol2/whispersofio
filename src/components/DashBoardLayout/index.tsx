@@ -13,6 +13,7 @@ import React from 'react'
 
 import Footer from '@/components/Footer'
 import { HeaderNav } from '@/components/HeaderNav'
+import { SocialRail } from '@/components/SocialRail'
 
 export default function DashboardLayout({
   children
@@ -52,6 +53,8 @@ export default function DashboardLayout({
             <HeaderNav />
           </Toolbar>
         </AppBar>
+
+        <SocialRail />
 
         <Box
           component="main"
