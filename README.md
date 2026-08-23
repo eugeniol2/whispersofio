@@ -8,7 +8,7 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 
 ![Tela de asteroides próximos do NASA Explorer](docs/screenshots/asteroids.png)
 
-<sub>Asteroides em aproximação, com um diagrama por card posicionando a Terra, a órbita da Lua e o objeto — em escala logarítmica, já que as distâncias vão de 9 a mais de 120 distâncias lunares.</sub>
+<sub>Asteroides em aproximação, com um diagrama por card posicionando a Terra, a órbita da Lua e o objeto — em escala logarítmica, já que as distâncias entre um objeto e outro variam por ordens de grandeza.</sub>
 
 ---
 
@@ -34,7 +34,7 @@ O NASA Explorer exibe dados ao vivo de várias APIs abertas da NASA por trás de
 
 O projeto também serve como demonstração de prática full-stack: arquitetura baseada em features, uma camada de dados tipada construída sobre React Query, proteção da chave de API e cache de respostas no servidor via Route Handlers do Next.js, e o hábito de verificar o comportamento de APIs de terceiros contra os serviços reais antes de construir em cima delas.
 
-Todas as telas são renderizadas no servidor com os dados já embutidos e revalidação incremental, então chegam ao navegador prontas — sem spinner e sem nenhuma requisição após a hidratação.
+Todas as telas são renderizadas no servidor com os dados já embutidos e revalidação incremental, então chegam ao navegador prontas — sem spinner e sem refazer no navegador nenhuma busca que o servidor já tenha feito.
 
 ---
 
@@ -43,7 +43,7 @@ Todas as telas são renderizadas no servidor com os dados já embutidos e revali
 ### Dashboard
 - Estatísticas ao vivo de eventos na Terra, asteroides próximos e imagens de Marte — cada uma resolve de forma independente, então uma fonte com falha nunca bloqueia as demais
 - Foto Astronômica do Dia em destaque, imagem ou vídeo
-- Atividade recente de eventos na Terra, com cada linha levando à sua própria página de detalhes
+- Atividade recente de eventos na Terra, cada linha identificando a categoria do evento por ícone e rótulo e levando à sua própria página de detalhes
 - Miniaturas das APODs recentes
 
 ### Foto Astronômica do Dia (APOD)
@@ -54,8 +54,9 @@ Todas as telas são renderizadas no servidor com os dados já embutidos e revali
 
 ### Eventos na Terra
 - Eventos naturais ao vivo da NASA EONET — incêndios florestais, tempestades, vulcões, enchentes e mais
-- Filtros de aplicação instantânea por status, categoria, número de linhas e intervalo de tempo
+- Filtros de aplicação instantânea por status, categoria, número de linhas e intervalo de tempo, com barra de progresso enquanto o resultado é buscado
 - Categorias sem eventos correspondentes se ocultam automaticamente
+- Quando o EONET aplica limite de taxa, a tela espera e tenta de novo sozinha antes de mostrar erro
 - Nomes de lugares via geocodificação reversa quando a NASA não fornece descrição
 - Páginas de detalhe por evento com histórico de posição, fontes, compartilhamento por link e rastreamento de tempestades ao vivo
 
@@ -180,6 +181,7 @@ src/
 │   ├── endpoints.ts        URLs base externas, centralizadas
 │   ├── prefetch.ts         monta o estado desidratado das páginas
 │   ├── queryKeys.ts        fábrica de chaves do React Query
+│   ├── staleTimes.ts       janelas de cache do cliente, alinhadas ao ISR
 │   └── serverCache.ts      cache em memória usado no servidor
 ├── components/             UI compartilhada
 ├── utils/                  helpers puros compartilhados
@@ -188,7 +190,7 @@ src/
 
 Cada módulo em `services/api/<nome>` expõe funções de request tipadas e hooks do React Query, então toda feature busca dados da mesma forma, independentemente da origem.
 
-Onde existe `server.ts`, a mesma função serve o route handler e o Server Component — a página nunca chama a própria API por HTTP, e ambos compartilham o cache. O resultado é que as telas chegam ao navegador já renderizadas, sem nenhuma requisição depois da hidratação.
+Onde existe `server.ts`, a mesma função serve o route handler e o Server Component — a página nunca chama a própria API por HTTP, e ambos compartilham o cache. O resultado é que as telas chegam ao navegador já renderizadas, e o cliente não repete nenhuma dessas buscas depois da hidratação.
 
 ---
 
@@ -208,13 +210,19 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 
 **Cache em memória não sobrevive a serverless.** O cache do servidor vivia só em memória, o que funciona num processo longo mas não em funções que sobem e descem a cada invocação — e nem em desenvolvimento, onde cada reinício zerava tudo. Todas as chamadas externas passaram a usar o data cache do Next, que persiste em disco. Reiniciando o servidor, a rota de informações do Mars Rover saiu de 8,5s para 0,033s.
 
-**SSR não deixa o dado mais rápido, muda onde se espera.** Com prefetch no servidor as telas chegam prontas, mas se a fonte estiver fria o usuário encara uma tela parada em vez de um spinner. Por isso cada rota tem um `loading.tsx`: o esqueleto é transmitido na hora e o conteúdo entra em seguida. Pelo mesmo motivo, a estatística de eventos do dashboard ficou deliberadamente fora do prefetch — contar todos os eventos abertos do EONET leva cerca de 75s, tempo que não pode entrar na renderização de uma página.
+**SSR não deixa o dado mais rápido, muda onde se espera.** Com prefetch no servidor as telas chegam prontas, mas se a fonte estiver fria o usuário encara uma tela parada em vez de um spinner. Por isso cada rota tem um `loading.tsx`: o esqueleto é transmitido na hora e o conteúdo entra em seguida.
+
+**Contar eventos abertos custa 4,7 MB.** A estatística de eventos do dashboard precisava de uma contagem que o EONET só entrega devolvendo os eventos inteiros: sem recorte de tempo são 7.082 eventos e 4,7 MB de resposta, o que chegou a estourar o limite de tempo de uma função serverless. Limitar a janela a 30 dias reduz para 135 eventos e 184 KB — 26× menos dados — e tornou a estatística barata o bastante para entrar no prefetch junto com o resto do dashboard. O rótulo na tela diz "Earth Events (30d)", porque estreitar a janela mudou o significado do número.
+
+**`staleTime` menor que o ISR anula o SSR.** Cada rota semeia suas queries no servidor e é guardada por ISR de 15 a 60 minutos, mas o `staleTime` do React Query era de 5 minutos. Passado esse tempo, o HTML em cache chegava com dados que o cliente já considerava vencidos, e o navegador rebuscava exatamente o que o servidor tinha acabado de embutir — em 92% da janela, nas rotas de uma hora. Medindo com o HTML a 339s de idade, uma visita fria disparava 3 requisições em Eventos na Terra, 2 no Mars Rover e 1 em cada uma das demais. Alinhar cada `staleTime` ao `revalidate` da sua rota zerou todas: buscar antes de o servidor conseguir gerar HTML novo não traz dado mais recente.
+
+**Uma sondagem barata pode custar caro em volume.** Esconder as categorias sem eventos exige perguntar ao EONET, categoria por categoria, se há algo — 13 requisições. Feitas do navegador, quatro ou cinco trocas de filtro consumiam as 60 requisições por minuto que o EONET permite por IP, e a tela quebrava com 429. Duas correções: a sondagem passou para um route handler, onde o data cache do Next a compartilha entre todos os visitantes, e o 429 deixou de ser tratado como erro definitivo. A política de retry descartava todo 4xx, o que é correto em geral mas errado justamente para o 429, que significa "espere e tente de novo". O navegador saiu de 14 requisições por troca de filtro para 2.
 
 ---
 
 ## Interface
 
-- Navegação no cabeçalho, centralizada, com a página ativa destacada e menu compacto em telas menores
+- Navegação no cabeçalho, centralizada, cada item com seu ícone, a página ativa destacada e menu compacto em telas menores
 - Tela de carregamento própria: um planeta girando em CSS e mensagens que se alternam enquanto o servidor busca os dados
 - Atalhos fixos para GitHub e LinkedIn na lateral, ocultos em telas pequenas para não cobrir o conteúdo
 - Tema escuro único, com o design system definido no tema do MUI
@@ -253,8 +261,9 @@ Acervo histórico da NASA, navegável por missão ou busca livre.
 ## Limitações Conhecidas
 
 - O grid "NASA API Collections" do dashboard é uma lista de navegação estática, não dados buscados
-- A estatística de eventos na Terra cobre os últimos 30 dias, não todo o histórico em aberto — contar tudo leva mais de dois minutos no EONET, acima do limite de qualquer função serverless. O rótulo na tela deixa a janela explícita
-- Essa estatística é também a única chamada feita pelo navegador; todo o resto chega renderizado do servidor
+- A estatística de eventos na Terra cobre os últimos 30 dias, não todo o histórico em aberto — o rótulo na tela deixa a janela explícita
+- A geocodificação reversa dos eventos é a única busca que sai do navegador depois da hidratação, porque depende de coordenadas que só interessam aos cards visíveis; o resultado é cacheado por coordenada e não se repete
+- EONET, Image & Video Library e a geocodificação são chamadas direto do navegador. Cada visitante paga a própria requisição, sem cache compartilhado entre usuários como acontece nas rotas que passam pelo servidor
 - Todo o conteúdo vindo da NASA é em inglês, então a interface segue o mesmo idioma por consistência
 - Não há suíte de testes automatizados
 
