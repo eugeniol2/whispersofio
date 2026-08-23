@@ -6,7 +6,6 @@ interface VisibilityTierInfo {
   detail: string
 }
 
-// Limiting magnitudes for a dark, moonless sky. Higher magnitude = fainter.
 const TIERS: { maxMagnitude: number; info: VisibilityTierInfo }[] = [
   {
     maxMagnitude: 6,
@@ -62,8 +61,6 @@ export function getVisibilityTier(magnitude: number): VisibilityTierInfo {
   return match ? match.info : BEYOND_AMATEUR
 }
 
-// An object culminates overhead at a latitude equal to its declination, and
-// never rises for observers more than 90 degrees away from it.
 export function describeVisibleRegions(declination: number): {
   summary: string
   regions: string

@@ -14,8 +14,6 @@ export const DashboardStatCard = ({ stat }: DashboardStatCardProps) => {
 
   return (
     <Card
-      // The theme lifts cards on hover, which suggests they're clickable.
-      // These are read-only counters, so the hover state is cancelled.
       sx={{
         p: 2.5,
         transition: 'none',

@@ -5,7 +5,7 @@ const APOD_ARCHIVE_START = '1995-06-16'
 const RECENT_DAYS = 6
 const STATS_DAYS = 29
 
-interface ApodApiResponse {
+export interface ApodApiResponse {
   date: string
   title: string
   explanation: string
@@ -20,7 +20,7 @@ interface ApodApiResponse {
 const toMediaType = (value: string): ApodMediaType =>
   value === 'image' || value === 'video' ? value : 'other'
 
-function toEntry(item: ApodApiResponse): ApodEntry {
+export function toApodEntry(item: ApodApiResponse): ApodEntry {
   const isYouTube = /youtube\.com|youtu\.be|vimeo\.com/.test(item.url)
 
   return {
@@ -52,38 +52,43 @@ async function requestApod(query: string): Promise<ApodApiResponse[]> {
 
 export async function fetchApod(date: string): Promise<ApodEntry> {
   const [item] = await requestApod(`?date=${date}`)
-  return toEntry(item)
+  return toApodEntry(item)
 }
 
 export async function fetchRandomApod(): Promise<ApodEntry> {
   const [item] = await requestApod('?random=1')
-  return toEntry(item)
+  return toApodEntry(item)
 }
 
 const toDateString = (date: Date) => date.toISOString().slice(0, 10)
 
-async function fetchApodRange(days: number): Promise<ApodEntry[]> {
+export function getApodRangeDates(days: number): {
+  start: string
+  end: string
+} {
   const end = new Date()
   end.setDate(end.getDate() - 1)
   const start = new Date(end)
   start.setDate(start.getDate() - days)
 
-  const items = await requestApod(
-    `?start=${toDateString(start)}&end=${toDateString(end)}`
-  )
+  return { start: toDateString(start), end: toDateString(end) }
+}
 
-  return items.map(toEntry).reverse()
+export const APOD_RECENT_DAYS = RECENT_DAYS
+export const APOD_STATS_DAYS = STATS_DAYS
+
+async function fetchApodRange(days: number): Promise<ApodEntry[]> {
+  const { start, end } = getApodRangeDates(days)
+  const items = await requestApod(`?start=${start}&end=${end}`)
+
+  return items.map(toApodEntry).reverse()
 }
 
 export function fetchRecentApods(): Promise<ApodEntry[]> {
   return fetchApodRange(RECENT_DAYS)
 }
 
-export async function fetchApodStats(): Promise<ApodStat[]> {
-  const entries = await fetchApodRange(STATS_DAYS)
-
-  // APOD skipped a few days in its first week, so this counts days since
-  // launch rather than claiming an exact number of publications.
+export function buildApodStats(entries: ApodEntry[]): ApodStat[] {
   const daysSinceLaunch = Math.floor(
     (Date.now() - new Date(APOD_ARCHIVE_START).getTime()) /
       (1000 * 60 * 60 * 24)
@@ -105,4 +110,8 @@ export async function fetchApodStats(): Promise<ApodStat[]> {
       label: 'Videos This Month'
     }
   ]
+}
+
+export async function fetchApodStats(): Promise<ApodStat[]> {
+  return buildApodStats(await fetchApodRange(STATS_DAYS))
 }

@@ -23,9 +23,6 @@ interface EphemerisRow {
   magnitude: number | null
 }
 
-// Rows look like:
-//  2026-Aug-22 00:00     15 43 23.05 +26 20 04.4   19.366    n.a.
-// Magnitude is sometimes "n.a." and sometimes written without decimals ("20.").
 const ROW_PATTERN =
   /^\s*(\d{4}-\w{3}-\d{2}\s+\d{2}:\d{2})\s+(\d{2} \d{2} \d{2}\.\d+)\s+([+-]\d{2}) (\d{2}) (\d{2}\.\d+)\s+(n\.a\.|[\d.]+)/
 
@@ -46,7 +43,9 @@ function parseEphemeris(result: string): EphemerisRow[] {
       const sign = degrees.startsWith('-') ? -1 : 1
       const declination =
         sign *
-        (Math.abs(Number(degrees)) + Number(minutes) / 60 + Number(seconds) / 3600)
+        (Math.abs(Number(degrees)) +
+          Number(minutes) / 60 +
+          Number(seconds) / 3600)
 
       return {
         observedAt,
@@ -85,8 +84,6 @@ export async function GET(request: Request) {
   const url = new URL(HORIZONS_API_URL)
   url.searchParams.set('format', 'json')
 
-  // Horizons parses these values itself and requires the literal single quotes,
-  // otherwise the comma in QUANTITIES is read as separate settings.
   const quoted: Record<string, string> = {
     COMMAND: `DES=${id};`,
     OBJ_DATA: 'NO',
@@ -126,8 +123,6 @@ export async function GET(request: Request) {
       return NextResponse.json(unknown, { headers: { 'X-Cache': 'MISS' } })
     }
 
-    // Peak brightness during the approach is what decides whether it can be
-    // seen at all, so report the brightest row rather than a fixed hour.
     const rated = rows.filter(row => row.magnitude !== null)
     const brightest = rated.length
       ? rated.reduce((best, row) =>

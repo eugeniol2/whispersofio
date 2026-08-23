@@ -10,8 +10,6 @@ interface ApodMediaProps {
   interactive?: boolean
 }
 
-// Painting a frame means downloading the whole mp4, so only small files are
-// previewed. Anything larger falls back to the video tile.
 const PREVIEWABLE_VIDEO_BYTES = 3 * 1024 * 1024
 
 const VideoTile = ({ title, height }: { title: string; height: number }) => (
@@ -29,7 +27,10 @@ const VideoTile = ({ title, height }: { title: string; height: number }) => (
     }}
   >
     <PlayCircleOutlineIcon
-      sx={{ fontSize: height > 220 ? 56 : 40, color: theme.palette.secondary.main }}
+      sx={{
+        fontSize: height > 220 ? 56 : 40,
+        color: theme.palette.secondary.main
+      }}
     />
     <Typography
       variant="caption"
@@ -71,8 +72,6 @@ export const ApodMedia = ({
   }
 
   if (entry.mediaType === 'image') {
-    // `url` is the web-sized render; `hdurl` runs to several megabytes and is
-    // offered as an explicit action instead of blocking the card.
     return (
       <Box
         component="img"

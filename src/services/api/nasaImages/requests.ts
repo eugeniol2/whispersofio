@@ -27,8 +27,6 @@ interface SearchResponse {
 
 type ImageLink = { href: string; render?: string; width?: number }
 
-// `orig` is excluded on purpose: it is often a multi-megabyte TIFF that
-// browsers will not render.
 function pickImage(links: ImageLink[], variants: string[]): string | null {
   const images = links.filter(link => link.render === 'image')
   if (images.length === 0) return null
@@ -46,12 +44,8 @@ interface AssetResponse {
   collection: { items: { href: string }[] }
 }
 
-// `orig` is skipped here too: those files run to hundreds of megabytes, while
-// `mobile` is the smallest variant despite what the names suggest.
 const VIDEO_VARIANTS = ['mobile', 'small', 'medium', 'large']
 
-// Asset hrefs come back as http with unencoded spaces, which browsers block as
-// mixed content and cannot resolve.
 function toPlayableUrl(href: string): string {
   return new URL(href.replace(/^http:\/\//, 'https://')).toString()
 }

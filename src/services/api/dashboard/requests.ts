@@ -57,7 +57,7 @@ export async function fetchDashboardStats(): Promise<DashboardStat[]> {
   return stats
 }
 
-interface NasaApodApiResponse {
+export interface NasaApodApiResponse {
   date: string
   title: string
   explanation: string
@@ -75,6 +75,12 @@ export async function fetchDashboardFeaturedContent(): Promise<DashboardFeatured
 
   const apod: NasaApodApiResponse = await response.json()
 
+  return toDashboardFeaturedContent(apod)
+}
+
+export function toDashboardFeaturedContent(
+  apod: NasaApodApiResponse
+): DashboardFeaturedContent {
   return {
     badge: 'APOD',
     date: new Date(apod.date).toLocaleDateString('en-US', {
@@ -98,7 +104,7 @@ export async function fetchDashboardApiCollections(): Promise<
   return mockDashboardApiCollections
 }
 
-interface DashboardActivityResponse {
+export interface DashboardActivityResponse {
   id: string
   title: string
   date: string
@@ -115,6 +121,12 @@ export async function fetchDashboardActivity(): Promise<
 
   const data: DashboardActivityResponse[] = await response.json()
 
+  return toDashboardActivity(data)
+}
+
+export function toDashboardActivity(
+  data: DashboardActivityResponse[]
+): DashboardActivityItem[] {
   return data.map(item => ({
     id: item.id,
     icon: 'earthEvents',

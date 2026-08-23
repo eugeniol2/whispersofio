@@ -18,8 +18,6 @@ export function useRoverInfoQuery(rover: RoverName) {
     queryFn: async ({ signal }) => {
       const { photos, ...info } = await fetchRoverInfo(rover, signal)
 
-      // The info response already carries this sol's photos, so prime the cache
-      // and spare the default view a second request.
       queryClient.setQueryData(
         queryKeys.marsRover.photos(rover, info.latestSol, 'all', 'all'),
         photos

@@ -13,8 +13,6 @@ const TRACK_END = 286
 const TRACK_Y = 52
 const MAX_LUNAR = 130
 
-// Miss distances span roughly 9 to 120 lunar distances, so a linear track would
-// collapse the Moon marker onto Earth. A log scale keeps both readable.
 const trackPosition = (lunar: number) => {
   const clamped = Math.min(Math.max(lunar, 0), MAX_LUNAR)
   const ratio = Math.log10(1 + clamped) / Math.log10(1 + MAX_LUNAR)
@@ -39,7 +37,11 @@ export const AsteroidApproachDiagram = ({
         ? 'start'
         : 'middle'
   const labelX =
-    anchor === 'end' ? asteroidX + 6 : anchor === 'start' ? asteroidX - 6 : asteroidX
+    anchor === 'end'
+      ? asteroidX + 6
+      : anchor === 'start'
+        ? asteroidX - 6
+        : asteroidX
 
   return (
     <Box

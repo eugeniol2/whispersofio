@@ -1,6 +1,13 @@
 'use client'
 
-import { AppBar, Box, Container, Toolbar, Typography, useTheme } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Container,
+  Toolbar,
+  Typography,
+  useTheme
+} from '@mui/material'
 import Link from 'next/link'
 import React from 'react'
 
@@ -26,8 +33,6 @@ export default function DashboardLayout({
       >
         <AppBar position="fixed">
           <Toolbar sx={{ position: 'relative', gap: 2 }}>
-            {/* The spacer carries the flex growth so the brand link stays as
-                wide as its text instead of covering the whole toolbar. */}
             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
               <Typography
                 variant="h6"

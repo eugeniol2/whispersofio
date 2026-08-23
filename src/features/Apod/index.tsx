@@ -18,20 +18,13 @@ import {
   useApodStatsQuery,
   useRecentApodsQuery
 } from '@/services/api/apod/queries'
+import { getLatestApodDate } from '@/utils/getLatestApodDate'
 
 import { ApodControls } from './components/ApodControls'
 import { ApodFeaturedCard } from './components/ApodFeaturedCard'
 import { ApodStats } from './components/ApodStats'
 
 const APOD_ARCHIVE_URL = 'https://apod.nasa.gov/apod/archivepix.html'
-
-// NASA publishes on US Eastern time, so the most recent guaranteed entry is
-// yesterday in UTC terms.
-const getLatestApodDate = () => {
-  const date = new Date()
-  date.setDate(date.getDate() - 1)
-  return date.toISOString().slice(0, 10)
-}
 
 export function Apod() {
   const latestDate = getLatestApodDate()

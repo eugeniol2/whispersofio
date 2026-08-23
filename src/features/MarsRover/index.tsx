@@ -15,6 +15,7 @@ import {
   useRoverPhotosQuery
 } from '@/services/api/marsRover/queries'
 import {
+  DEFAULT_ROVER,
   getCameraView,
   roverCameras
 } from '@/services/api/marsRover/roverReference'
@@ -25,7 +26,7 @@ import { RoverControls } from './components/RoverControls'
 import { RoverInfoCard } from './components/RoverInfoCard'
 
 export function MarsRover() {
-  const [rover, setRover] = useState<RoverName>('curiosity')
+  const [rover, setRover] = useState<RoverName>(DEFAULT_ROVER)
   const [draftSol, setDraftSol] = useState('')
   const [committedSol, setCommittedSol] = useState<number | null>(null)
   const [camera, setCamera] = useState('all')

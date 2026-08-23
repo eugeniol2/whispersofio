@@ -71,8 +71,6 @@ export const HeaderNav = () => {
   return (
     <Box
       component="nav"
-      // Absolutely centred on the toolbar so the brand's width doesn't pull the
-      // links off-centre. The toolbar is the positioning context.
       sx={{
         display: 'flex',
         gap: 0.5,
@@ -91,8 +89,6 @@ export const HeaderNav = () => {
             href={item.path}
             color="inherit"
             aria-current={active ? 'page' : undefined}
-            // The global MuiButton style is built for CTAs: it adds a glow and
-            // lifts on hover, which reads wrong for a row of nav links.
             sx={{
               px: 1.75,
               fontSize: '1rem',
@@ -103,7 +99,9 @@ export const HeaderNav = () => {
               borderRadius: 0,
               boxShadow: 'none',
               borderBottom: '2px solid',
-              borderColor: active ? theme.palette.secondary.main : 'transparent',
+              borderColor: active
+                ? theme.palette.secondary.main
+                : 'transparent',
               '&:hover': {
                 transform: 'none',
                 boxShadow: 'none',

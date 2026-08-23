@@ -74,7 +74,6 @@ const theme = createTheme({
     }
   },
   typography: {
-    // Loaded in app/layout.tsx via next/font, which exposes this CSS variable.
     fontFamily: ['var(--font-nunito)', 'sans-serif'].join(','),
     h1: {
       fontSize: '3rem',
@@ -94,9 +93,6 @@ const theme = createTheme({
     }
   },
   components: {
-    // Native form controls don't inherit font-family, and MUI renders buttons
-    // for things like CardActionArea — so their whole subtree would fall back
-    // to the browser default instead of the app font.
     MuiCssBaseline: {
       styleOverrides: {
         'button, input, select, textarea': {

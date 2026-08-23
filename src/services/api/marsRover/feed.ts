@@ -1,6 +1,10 @@
 import { ApiError } from '../client'
 import { MARS_RAW_IMAGES_BASE_URL } from '../endpoints'
-import { getCameraView, roverCameras, roverFeedCategory } from './roverReference'
+import {
+  getCameraView,
+  roverCameras,
+  roverFeedCategory
+} from './roverReference'
 import type { CameraView, MarsPhoto, RoverName } from './types'
 
 export const PHOTO_LIMIT = 50
@@ -32,8 +36,6 @@ interface FetchRawImagesFeedParams {
   camera?: string
 }
 
-// The feed ignores paging params once a sol is given and always returns that
-// sol in full, so callers have to trim the result themselves.
 export async function fetchRawImagesFeed({
   rover,
   sol,
@@ -94,7 +96,6 @@ export function mapFeedPhotos({
         fullName: cameraLabels.get(instrument) ?? instrument
       },
       imageUrl: preview,
-      // The feed's own `link` 403s for Curiosity, so point at the image itself
       fullImageUrl: files.full_res ?? files.large ?? preview
     }
   })

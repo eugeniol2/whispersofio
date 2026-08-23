@@ -14,6 +14,8 @@ export function getCameraView(instrument: string): CameraView {
   return 'other'
 }
 
+export const DEFAULT_ROVER: RoverName = 'curiosity'
+
 export const roverFeedCategory: Record<RoverName, string> = {
   curiosity: 'msl',
   perseverance: 'mars2020'
@@ -70,7 +72,10 @@ export const roverCameras: Record<RoverName, RoverCamera[]> = {
     { name: 'SHERLOC_WATSON', fullName: 'SHERLOC WATSON Camera' },
     { name: 'PIXL_MCC', fullName: 'PIXL Micro Context Camera' },
     { name: 'SKYCAM', fullName: 'MEDA Skycam' },
-    { name: 'FRONT_HAZCAM_LEFT_A', fullName: 'Front Hazard Avoidance - Left A' },
+    {
+      name: 'FRONT_HAZCAM_LEFT_A',
+      fullName: 'Front Hazard Avoidance - Left A'
+    },
     {
       name: 'FRONT_HAZCAM_RIGHT_A',
       fullName: 'Front Hazard Avoidance - Right A'
