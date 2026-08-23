@@ -64,6 +64,7 @@ export interface NasaApodApiResponse {
   media_type: 'image' | 'video'
   url: string
   hdurl?: string
+  copyright?: string
 }
 
 export async function fetchDashboardFeaturedContent(): Promise<DashboardFeaturedContent> {
@@ -93,6 +94,7 @@ export function toDashboardFeaturedContent(
     imageLabel: apod.title,
     mediaType: apod.media_type,
     mediaUrl: apod.media_type === 'image' ? (apod.hdurl ?? apod.url) : apod.url,
+    credit: apod.copyright?.trim() || null,
     href: '/apod'
   }
 }

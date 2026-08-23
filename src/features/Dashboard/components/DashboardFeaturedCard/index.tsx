@@ -70,6 +70,12 @@ export const DashboardFeaturedCard = ({
           {content.description}
         </Typography>
 
+        {content.credit && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Credit: {content.credit}
+          </Typography>
+        )}
+
         <Button variant="contained" component={Link} href={content.href}>
           View Full Image
         </Button>

@@ -4,6 +4,10 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 
 > Nome do repositório: `whispersofio`
 
+![Tela de asteroides próximos do NASA Explorer](docs/screenshots/asteroids.png)
+
+<sub>Asteroides em aproximação, com um diagrama por card posicionando a Terra, a órbita da Lua e o objeto — em escala logarítmica, já que as distâncias vão de 9 a mais de 120 distâncias lunares.</sub>
+
 ---
 
 ## Índice
@@ -17,6 +21,7 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 - [Arquitetura](#arquitetura)
 - [Notas de Engenharia](#notas-de-engenharia)
 - [Interface](#interface)
+- [Telas](#telas)
 - [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
@@ -197,6 +202,8 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 
 **O gargalo do Mars Rover não era o volume de dados.** A tela demorava a abrir, e a hipótese natural era limitar o número de imagens. A medição mostrou outra coisa: um sol vazio de 0,2 KB leva os mesmos ~7,5s que um de 365 KB. O custo é latência por requisição, não banda — e sondar em paralelo piora, porque o feed serializa (3 requisições simultâneas levaram 71s contra 24s sequenciais). A solução foi reduzir requisições, não dados: o `/info` passou a devolver as fotos que já baixara ao procurar o sol, e as respostas do feed passaram a ser cacheadas em disco. Após reiniciar o servidor, a rota caiu de 8,5s para 0,033s.
 
+**Cache em memória não sobrevive a serverless.** O cache do servidor vivia só em memória, o que funciona num processo longo mas não em funções que sobem e descem a cada invocação — e nem em desenvolvimento, onde cada reinício zerava tudo. Todas as chamadas externas passaram a usar o data cache do Next, que persiste em disco. Reiniciando o servidor, a rota de informações do Mars Rover saiu de 8,5s para 0,033s.
+
 **SSR não deixa o dado mais rápido, muda onde se espera.** Com prefetch no servidor as telas chegam prontas, mas se a fonte estiver fria o usuário encara uma tela parada em vez de um spinner. Por isso cada rota tem um `loading.tsx`: o esqueleto é transmitido na hora e o conteúdo entra em seguida. Pelo mesmo motivo, a estatística de eventos do dashboard ficou deliberadamente fora do prefetch — contar todos os eventos abertos do EONET leva cerca de 75s, tempo que não pode entrar na renderização de uma página.
 
 ---
@@ -210,16 +217,47 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 
 ---
 
+## Telas
+
+### Dashboard
+Estatísticas ao vivo, a Foto Astronômica do Dia em destaque e a atividade recente de eventos na Terra.
+
+![Dashboard do NASA Explorer](docs/screenshots/dashboard.png)
+
+### Mars Rover
+Imagens brutas do Curiosity e do Perseverance, com filtro por sol, câmera e posição da câmera.
+
+![Tela do Mars Rover](docs/screenshots/mars-rover.png)
+
+### Foto Astronômica do Dia
+Imagem ou vídeo do dia, com navegação por data, sorteio aleatório e estatísticas do acervo.
+
+![Tela da Foto Astronômica do Dia](docs/screenshots/apod.png)
+
+### Eventos na Terra
+Eventos naturais ao vivo do EONET, com filtros de aplicação instantânea e localização por geocodificação reversa.
+
+![Tela de eventos na Terra](docs/screenshots/earth-events.png)
+
+### Biblioteca de Mídia
+Acervo histórico da NASA, navegável por missão ou busca livre.
+
+![Tela da biblioteca de mídia](docs/screenshots/media.png)
+
+---
+
 ## Limitações Conhecidas
 
 - O grid "NASA API Collections" do dashboard é uma lista de navegação estática, não dados buscados
-- A estatística de eventos na Terra é a única chamada feita pelo navegador, por causa do custo da consulta no EONET
+- A estatística de eventos na Terra cobre os últimos 30 dias, não todo o histórico em aberto — contar tudo leva mais de dois minutos no EONET, acima do limite de qualquer função serverless. O rótulo na tela deixa a janela explícita
+- Essa estatística é também a única chamada feita pelo navegador; todo o resto chega renderizado do servidor
 - Todo o conteúdo vindo da NASA é em inglês, então a interface segue o mesmo idioma por consistência
 - Não há suíte de testes automatizados
-- Não há deploy configurado
 
 ---
 
 ## Aviso
 
 Este é um projeto educacional independente, sem afiliação ou endosso da NASA. Todos os dados e imagens pertencem à NASA e aos seus respectivos provedores.
+
+Material produzido pela NASA é de domínio público, mas a **Foto Astronômica do Dia é uma exceção frequente**: boa parte das imagens pertence a astrofotógrafos e observatórios, que mantêm os direitos. Numa amostra de 30 dias, 24 tinham copyright de terceiros. Por isso as telas que exibem uma APOD mostram o crédito do autor, e as capturas deste README foram escolhidas para não usar foto de terceiro como imagem principal.
