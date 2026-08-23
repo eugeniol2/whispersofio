@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Link, Typography } from '@mui/material'
+import { Box, Container, Divider, Link, Typography } from '@mui/material'
 import React from 'react'
 
 import theme from '@/theme/theme'
@@ -22,7 +22,7 @@ const Footer = () => {
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              md: '2fr 1fr 1fr 1fr'
+              md: '2fr 1fr 1fr'
             },
             gap: 4
           }}
@@ -87,32 +87,6 @@ const Footer = () => {
             </Box>
           </Box>
 
-          <Box sx={{ justifySelf: { md: 'start' } }}>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: 600, color: theme.palette.secondary.main }}
-            >
-              Resources
-            </Typography>
-            <Box component="ul" sx={{ listStyle: 'none', pl: 0, mt: 2 }}>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  API Keys
-                </Link>
-              </li>
-              <li>
-                <Link href="#" underline="hover" color="inherit">
-                  Support
-                </Link>
-              </li>
-            </Box>
-          </Box>
           <Box>
             <Typography
               variant="h6"

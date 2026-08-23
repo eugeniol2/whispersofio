@@ -1,22 +1,11 @@
 'use client'
 
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
-import MenuIcon from '@mui/icons-material/Menu'
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material'
-import React, { useState } from 'react'
+import { AppBar, Box, Container, Toolbar, Typography, useTheme } from '@mui/material'
+import Link from 'next/link'
+import React from 'react'
 
-import { CustomDrawer } from '@/components/CustomDrawer'
 import Footer from '@/components/Footer'
+import { HeaderNav } from '@/components/HeaderNav'
 
 export default function DashboardLayout({
   children
@@ -24,96 +13,54 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
-
-  const handleDrawerToggle = () => {
-    setIsDrawerOpen(!isDrawerOpen)
-  }
 
   return (
     <>
       <Box
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
           background: `radial-gradient(circle at center, ${theme.palette.background.default} 0%, #000013 100%)`
         }}
       >
         <AppBar position="fixed">
-          {!isDrawerOpen && !isMobile && (
-            <Box
-              sx={{
-                position: 'fixed',
-                top: 80,
-                left: 16,
-                zIndex: theme => theme.zIndex.drawer + 1,
-                backgroundColor: 'rgba(10,10,42,0.8)',
-                borderRadius: '50%',
-                boxShadow: 3
-              }}
-            >
-              <IconButton
-                onClick={handleDrawerToggle}
-                color="secondary"
-                size="large"
+          <Toolbar sx={{ position: 'relative', gap: 2 }}>
+            {/* The spacer carries the flex growth so the brand link stays as
+                wide as its text instead of covering the whole toolbar. */}
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <Typography
+                variant="h6"
+                noWrap
+                component={Link}
+                href="/"
                 sx={{
-                  boxShadow: '0 4px 15px rgba(0, 194, 194, 0.3)'
+                  display: 'inline-block',
+                  fontWeight: 700,
+                  color: 'inherit',
+                  textDecoration: 'none'
                 }}
               >
-                <KeyboardDoubleArrowRightIcon fontSize="large" />
-              </IconButton>
+                NASA Explorer
+              </Typography>
             </Box>
-          )}
-          <Toolbar>
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1, fontWeight: 700 }}
-            >
-              NASA Explorer
-            </Typography>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-              <Button color="inherit">API Keys</Button>
-              <Button color="inherit">Support</Button>
-              <Button color="inherit">Documentation</Button>
-            </Box>
+            <HeaderNav />
           </Toolbar>
         </AppBar>
-
-        <CustomDrawer
-          drawerToggleFunction={handleDrawerToggle}
-          isOpen={isDrawerOpen}
-          drawerWidth={240}
-        />
 
         <Box
           component="main"
           sx={{
             flexGrow: 1,
+            width: '100%',
             p: 3,
-            width: '100px',
-            marginTop: '64px'
+            mt: '64px'
           }}
         >
           <Container maxWidth="xl">{children}</Container>
         </Box>
       </Box>
-      <Box>
-        <Footer />
-      </Box>
+      <Footer />
     </>
   )
 }
