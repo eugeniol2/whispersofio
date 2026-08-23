@@ -34,7 +34,9 @@ export async function GET(request: Request) {
         'X-Cache': cached ? 'HIT' : 'MISS',
         ...(cached
           ? { 'X-Cache-Age-Seconds': String(result.cacheAgeSeconds) }
-          : {})
+          : {}),
+        // Keeps a CDN or the browser from pinning one random pick.
+        ...(random ? { 'Cache-Control': 'no-store' } : {})
       }
     })
   } catch (error) {

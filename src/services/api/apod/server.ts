@@ -91,10 +91,12 @@ export async function getApod({
   }
 
   const apod = await attachVideoSizes(
-    await apiClient('/planetary/apod', {
-      params,
-      revalidate: UPSTREAM_CACHE_SECONDS
-    })
+    await apiClient(
+      '/planetary/apod',
+      cacheKey
+        ? { params, revalidate: UPSTREAM_CACHE_SECONDS }
+        : { params, cache: 'no-store' }
+    )
   )
 
   if (cacheKey) apodCache.set(cacheKey, apod)
