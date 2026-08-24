@@ -1,12 +1,10 @@
-# NASA Explorer
+# Whispers of Io
 
 Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, rastreamento de eventos naturais em tempo real, imagens dos rovers em Marte, asteroides próximos à Terra e o acervo histórico de mídia da NASA — construído com Next.js, TypeScript e React Query sobre APIs reais da NASA.
 
 **[Acessar a aplicação →](https://whispersofio.vercel.app/)**
 
-> Nome do repositório: `whispersofio`
-
-![Tela de asteroides próximos do NASA Explorer](docs/screenshots/asteroids.png)
+![Tela de asteroides próximos do Whispers of Io](docs/screenshots/asteroids.png)
 
 <sub>Asteroides em aproximação, com um diagrama por card posicionando a Terra, a órbita da Lua e o objeto — em escala logarítmica, já que as distâncias entre um objeto e outro variam por ordens de grandeza.</sub>
 
@@ -30,7 +28,7 @@ Um dashboard para explorar os dados públicos da NASA — fotos astronômicas, r
 
 ## Sobre
 
-O NASA Explorer exibe dados ao vivo de várias APIs abertas da NASA por trás de uma interface escura e consistente. Todas as telas estão ligadas a uma fonte de dados real — não há dado de exemplo por trás dos visuais.
+O Whispers of Io exibe dados ao vivo de várias APIs abertas da NASA por trás de uma interface escura e consistente. Todas as telas estão ligadas a uma fonte de dados real — não há dado de exemplo por trás dos visuais.
 
 O projeto também serve como demonstração de prática full-stack: arquitetura baseada em features, uma camada de dados tipada construída sobre React Query, proteção da chave de API e cache de respostas no servidor via Route Handlers do Next.js, e o hábito de verificar o comportamento de APIs de terceiros contra os serviços reais antes de construir em cima delas.
 
@@ -234,7 +232,7 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 ### Dashboard
 Estatísticas ao vivo, a Foto Astronômica do Dia em destaque e a atividade recente de eventos na Terra.
 
-![Dashboard do NASA Explorer](docs/screenshots/dashboard.png)
+![Dashboard do Whispers of Io](docs/screenshots/dashboard.png)
 
 ### Mars Rover
 Imagens brutas do Curiosity e do Perseverance, com filtro por sol, câmera e posição da câmera.

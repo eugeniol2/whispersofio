@@ -58,7 +58,13 @@ const Footer = () => {
               gutterBottom
               sx={{ fontWeight: 700, color: theme.palette.common.white }}
             >
-              NASA Explorer
+              Whispers of{' '}
+              <Box
+                component="span"
+                sx={{ color: theme.palette.secondary.main }}
+              >
+                Io
+              </Box>
             </Typography>
             <Typography variant="body1">
               {
@@ -66,7 +72,7 @@ const Footer = () => {
               }
             </Typography>
             <Typography variant="body2" sx={{ mt: 2 }}>
-              © 2025 NASA Explorer. Data provided by NASA Open Data Portal.
+              © 2026 Whispers of Io. Data provided by NASA Open Data Portal.
             </Typography>
           </Box>
 

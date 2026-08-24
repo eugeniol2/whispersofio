@@ -47,7 +47,13 @@ export default function DashboardLayout({
                   textDecoration: 'none'
                 }}
               >
-                NASA Explorer
+                Whispers of{' '}
+                <Box
+                  component="span"
+                  sx={{ color: theme.palette.secondary.main }}
+                >
+                  Io
+                </Box>
               </Typography>
             </Box>
             <HeaderNav />
