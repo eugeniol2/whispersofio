@@ -69,6 +69,7 @@ export interface NasaApodApiResponse {
   media_type: 'image' | 'video'
   url: string
   hdurl?: string
+  thumbnail_url?: string
   copyright?: string
 }
 
@@ -99,6 +100,7 @@ export function toDashboardFeaturedContent(
     imageLabel: apod.title,
     mediaType: apod.media_type,
     mediaUrl: apod.media_type === 'image' ? (apod.hdurl ?? apod.url) : apod.url,
+    thumbnailUrl: apod.thumbnail_url ?? null,
     credit: apod.copyright?.trim() || null,
     href: '/apod'
   }
