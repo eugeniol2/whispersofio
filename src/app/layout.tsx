@@ -11,10 +11,28 @@ const nunito = Nunito({
   display: 'swap'
 })
 
+const SITE_URL = 'https://whispersofio.vercel.app'
+const SITE_TITLE = 'Whispers of Io: NASA Data Explorer'
+const SITE_DESCRIPTION =
+  "Astronomy pictures, live natural events, Mars rover imagery, near-Earth asteroids and NASA's media archive, in one dark-sky dashboard."
+
 export const metadata: Metadata = {
-  title: 'Whispers of Io — NASA Data Explorer',
-  description:
-    "Astronomy pictures, live natural events, Mars rover imagery, near-Earth asteroids and NASA's media archive, in one dark-sky dashboard."
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    siteName: 'Whispers of Io',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    locale: 'en_US'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION
+  }
 }
 
 export default function RootLayout({
