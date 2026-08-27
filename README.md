@@ -190,6 +190,20 @@ Cada módulo em `services/api/<nome>` expõe funções de request tipadas e hook
 
 Onde existe `server.ts`, a mesma função serve o route handler e o Server Component — a página nunca chama a própria API por HTTP, e ambos compartilham o cache. O resultado é que as telas chegam ao navegador já renderizadas, e o cliente não repete nenhuma dessas buscas depois da hidratação.
 
+### Camadas de cache
+
+Uma requisição atravessa três camadas e para na primeira que souber responder. Cada uma responde a uma pergunta diferente, e é isso que justifica existirem três:
+
+| Camada | Responde | Guarda | Sobrevive a restart | Compartilhada |
+| --- | --- | --- | --- | --- |
+| ISR da rota | preciso montar essa página? | o HTML pronto | sim | entre todos os visitantes |
+| `serverCache.ts` | preciso montar esse payload? | o objeto já mapeado | não | só na mesma instância |
+| data cache do `fetch` | preciso falar com a NASA? | a resposta crua de cada URL | sim | entre todos os visitantes |
+
+A do meio é a mais rápida e a única que não sobrevive a nada: é uma variável de módulo, e some junto com o processo. As outras duas persistem fora dele, então uma instância nova continua barata — ela refaz o trabalho de montagem, mas não a ida à rede.
+
+O `revalidate` de cada rota define a validade da primeira camada; as janelas das outras duas são alinhadas a ela, pelo motivo descrito em [Notas de Engenharia](#notas-de-engenharia).
+
 ---
 
 ## Notas de Engenharia
@@ -204,9 +218,11 @@ Alguns problemas que vale destacar, porque moldaram a implementação:
 
 **Mídia precisa ser medida antes de ser exibida.** A APOD serve versões web e em resolução máxima que diferem em cerca de 14×, e seus vídeos `mp4` não têm miniatura, enquanto o servidor envia o arquivo inteiro em vez de responder só com os metadados. Por isso os vídeos têm o tamanho verificado no servidor, e apenas os pequenos viram prévia com um quadro real.
 
-**O gargalo do Mars Rover não era o volume de dados.** A tela demorava a abrir, e a hipótese natural era limitar o número de imagens. A medição mostrou outra coisa: um sol vazio de 0,2 KB leva os mesmos ~7,5s que um de 365 KB. O custo é latência por requisição, não banda — e sondar em paralelo piora, porque o feed serializa (3 requisições simultâneas levaram 71s contra 24s sequenciais). A solução foi reduzir requisições, não dados: o `/info` passou a devolver as fotos que já baixara ao procurar o sol, e as respostas do feed passaram a ser cacheadas em disco. Após reiniciar o servidor, a rota caiu de 8,5s para 0,033s.
+**O gargalo do Mars Rover não era o volume de dados.** A tela demorava a abrir, e a hipótese natural era limitar o número de imagens. A medição mostrou outra coisa: um sol vazio de 0,2 KB leva os mesmos ~7,5s que um de 365 KB. O custo é latência por requisição, não banda — e sondar em paralelo piora, porque o feed serializa (3 requisições simultâneas levaram 71s contra 24s sequenciais). A solução foi reduzir requisições, não dados: o `/info` passou a devolver as fotos que já baixara ao procurar o sol, e as respostas do feed passaram para o data cache do Next. Após reiniciar o servidor, a rota caiu de 8,5s para 0,033s — e reiniciar zera o cache em memória, então esse número é a rota atendida apenas pela camada persistente.
 
-**Cache em memória não sobrevive a serverless.** O cache do servidor vivia só em memória, o que funciona num processo longo mas não em funções que sobem e descem a cada invocação — e nem em desenvolvimento, onde cada reinício zerava tudo. Todas as chamadas externas passaram a usar o data cache do Next, que persiste em disco. Reiniciando o servidor, a rota de informações do Mars Rover saiu de 8,5s para 0,033s.
+**Cache em memória não sobrevive a serverless.** O cache do servidor vivia só em memória, o que funciona num processo longo mas não em funções que sobem e descem a cada invocação — e nem em desenvolvimento, onde cada reinício zerava tudo. A correção não foi trocar uma camada pela outra: o cache em memória continua guardando o payload já montado, e ganhou embaixo dele o data cache do Next, que persiste fora do processo e é compartilhado entre instâncias. Quando a instância morre, a camada de cima se perde e a de baixo segura o custo — o loop que procura o sol mais recente roda de novo, mas sem sair para a rede.
+
+As duas janelas de validade precisam andar juntas. No Mars Rover, o `REVALIDATE_MS` do cache em memória e o `FEED_CACHE_SECONDS` do data cache são ambos de 6 horas de propósito: se a de cima durar mais que a de baixo, ela serve por mais tempo um payload que a camada persistente já considera vencido, e a validade da de baixo deixa de valer.
 
 **SSR não deixa o dado mais rápido, muda onde se espera.** Com prefetch no servidor as telas chegam prontas, mas se a fonte estiver fria o usuário encara uma tela parada em vez de um spinner. Por isso cada rota tem um `loading.tsx`: o esqueleto é transmitido na hora e o conteúdo entra em seguida.
 
